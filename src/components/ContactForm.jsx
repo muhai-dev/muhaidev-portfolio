@@ -132,9 +132,9 @@ export default function ContactForm() {
       initial={{ opacity: 0, y: 24 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
       transition={{ type: 'spring', stiffness: 400, damping: 28, duration: 0.5 }}
-      className="px-6 md:px-10 py-32 md:py-40"
+      className="px-4 sm:px-6 md:px-10 py-24 md:py-40 overflow-x-hidden"
     >
-      <div className="max-w-xl mx-auto">
+      <div className="max-w-xl mx-auto w-full min-w-0">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold uppercase italic tracking-tight text-neutral-900 dark:text-white mb-3">
             Get in Touch
@@ -164,9 +164,9 @@ export default function ContactForm() {
               >
                 <CheckCircle2 className="w-10 h-10 text-emerald-500" strokeWidth={2} />
               </motion.div>
-              <h3 className="text-2xl font-bold text-neutral-800 dark:text-white mb-2">Thank you!</h3>
+              <h3 className="text-2xl font-bold text-neutral-800 dark:text-white mb-2">Message Sent!</h3>
               <p className="text-neutral-500 dark:text-white/50 text-sm mb-6">
-                ได้รับข้อความของคุณแล้ว จะติดต่อกลับโดยเร็วที่สุดครับ
+                I will get back to you soon.
               </p>
               <button
                 type="button"
@@ -186,7 +186,7 @@ export default function ContactForm() {
               exit={{ opacity: 0 }}
               className="bg-white/40 dark:bg-white/[0.03] backdrop-blur-xl
                 border border-neutral-200/60 dark:border-white/[0.06]
-                rounded-2xl p-8 md:p-10 shadow-xl space-y-6"
+                rounded-2xl p-6 sm:p-8 md:p-10 shadow-xl space-y-6 w-full max-w-full overflow-hidden"
             >
               {/* Name */}
               <motion.div variants={staggerItem}>
@@ -274,8 +274,8 @@ export default function ContactForm() {
               >
                 {isLoading ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    กำลังส่ง...
+                    <Loader2 className="w-5 h-5 animate-spin flex-shrink-0" />
+                    <span>กำลังส่ง...</span>
                   </>
                 ) : (
                   'ส่งข้อความ'

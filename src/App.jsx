@@ -77,7 +77,7 @@ const tagColors = {
   mongodb: 'bg-green-500/15 text-green-400 dark:text-green-300 border-green-500/20',
 };
 
-const ProjectItem = ({ title, tags, link, githubUrl, gradientClass, index }) => {
+const ProjectItem = ({ title, description, tags, link, githubUrl, gradientClass, index }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const getTagStyle = (tag) => tagColors[tag] || 'bg-white/10 text-white/70 dark:text-white/60 border-white/10';
@@ -87,19 +87,23 @@ const ProjectItem = ({ title, tags, link, githubUrl, gradientClass, index }) => 
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => window.open(link, '_blank')}
-      whileHover={{ y: -8 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-      className="relative group cursor-pointer overflow-hidden rounded-2xl min-h-[200px]
+      whileHover={{ y: -12, transition: { duration: 0.2 } }}
+      className="relative group cursor-pointer overflow-hidden rounded-2xl min-h-[240px]
         bg-white/40 dark:bg-white/[0.03] backdrop-blur-xl
         border border-white/10
-        shadow-lg hover:shadow-xl hover:shadow-indigo-500/10
+        shadow-lg hover:shadow-2xl hover:shadow-indigo-500/20 dark:hover:shadow-indigo-500/15
         transition-shadow duration-300"
     >
-      <div className="p-8 md:p-10 relative z-10 min-h-[200px] flex flex-col justify-between">
+      <div className="p-8 md:p-10 relative z-10 min-h-[240px] flex flex-col justify-between">
         <span className="text-neutral-400 dark:text-white/20 font-mono text-xs tracking-tight">0{index + 1}</span>
         <h3 className="text-2xl md:text-4xl font-bold uppercase tracking-tight mt-2 text-neutral-800 dark:text-white/90 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors">
           {title}
         </h3>
+        {description && (
+          <p className="text-sm text-neutral-500 dark:text-white/40 mt-2 line-clamp-2 leading-relaxed">
+            {description}
+          </p>
+        )}
         <div className="flex flex-wrap gap-2 mt-4">
           {tags.map((tag, i) => (
             <span
@@ -125,18 +129,21 @@ const ProjectItem = ({ title, tags, link, githubUrl, gradientClass, index }) => 
           rounded-2xl"
       >
         <span className="text-white font-bold text-lg md:text-xl tracking-wider uppercase drop-shadow-lg">View Project</span>
-        <div className="flex gap-4 mt-2">
+        <div className="flex gap-4 mt-4">
           {githubUrl && (
             <motion.a
               href={githubUrl}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              whileHover={{ scale: 1.1 }}
+              whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.95 }}
-              className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+              className="flex flex-col items-center gap-2 text-white no-underline"
             >
-              <Github size={20} />
+              <span className="w-12 h-12 rounded-full bg-white/20 border border-white/30 flex items-center justify-center hover:bg-white/30 transition-colors">
+                <Github size={20} />
+              </span>
+              <span className="text-[10px] font-medium tracking-wider uppercase">Source Code</span>
             </motion.a>
           )}
           <motion.a
@@ -144,11 +151,14 @@ const ProjectItem = ({ title, tags, link, githubUrl, gradientClass, index }) => 
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
-            className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+            className="flex flex-col items-center gap-2 text-white no-underline"
           >
-            <ExternalLink size={20} />
+            <span className="w-12 h-12 rounded-full bg-white/20 border border-white/30 flex items-center justify-center hover:bg-white/30 transition-colors">
+              <ExternalLink size={20} />
+            </span>
+            <span className="text-[10px] font-medium tracking-wider uppercase">Live Site</span>
           </motion.a>
         </div>
       </motion.div>
@@ -182,6 +192,7 @@ export default function App() {
   const projects = [
     {
       title: 'Osara Web',
+      description: 'เว็บแอปพลิเคชันแบบ Full-stack สำหรับจัดการธุรกิจ ใช้ React สร้าง UI และ Node.js ทำ API',
       tags: ['React', 'Tailwind', 'Fullstack'],
       link: 'https://osara-web.vercel.app/',
       githubUrl: '',
@@ -189,6 +200,7 @@ export default function App() {
     },
     {
       title: 'Exam dashboard',
+      description: 'ระบบจัดการข้อสอบและคะแนน เชื่อมต่อ MongoDB เก็บข้อมูล real-time',
       tags: ['Node.js', 'mongodb'],
       link: 'https://exam-dashboard-uuii.vercel.app/',
       githubUrl: '',
@@ -196,6 +208,7 @@ export default function App() {
     },
     {
       title: 'Pokemon App',
+      description: 'แอปค้นหาและดูข้อมูล Pokemon ใช้ React + Tailwind สร้าง UI สวยงาม',
       tags: ['React', 'Tailwind', 'Fullstack'],
       link: 'https://pikachu-project-jd9e.vercel.app/',
       githubUrl: '',
@@ -203,6 +216,7 @@ export default function App() {
     },
     {
       title: 'Foucus website',
+      description: 'เว็บไซต์โฟกัสและ productivity ใช้ React และ Tailwind ออกแบบให้ใช้งานง่าย',
       tags: ['React', 'Tailwind', 'Fullstack'],
       link: 'https://focus-web-ten.vercel.app/',
       githubUrl: '',
@@ -352,7 +366,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* Hero Section */}
-      <section className="relative h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+      <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden py-24 md:py-32">
         {/* Animated mesh gradient background */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(99,102,241,0.15),transparent)] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(99,102,241,0.2),transparent)]" />
@@ -384,9 +398,9 @@ export default function App() {
 
         <motion.div
           style={{ scale: scaleHero, opacity: opacityHero }}
-          className="space-y-8 md:space-y-10 relative z-10"
+          className="space-y-10 md:space-y-14 relative z-10"
         >
-          <h1 className="text-[9vw] md:text-[10vw] font-bold leading-[0.95] tracking-tight uppercase italic">
+          <h1 className="text-[11vw] md:text-[12vw] font-extrabold leading-[0.9] tracking-tight uppercase">
             <span className="text-neutral-900 dark:text-white">Fullstack</span>
             <br />
             <span
@@ -397,42 +411,39 @@ export default function App() {
             </span>
           </h1>
 
-          <p className="max-w-xl mx-auto text-sm md:text-base font-light tracking-[0.18em] leading-relaxed uppercase
-            text-neutral-500 dark:text-white/30">
-            Specializing in React, Node.js and Modern Databases.
+          <p className="max-w-2xl mx-auto text-base md:text-lg font-medium tracking-wide
+            text-neutral-600 dark:text-white/50">
+            สร้างเว็บไซต์และแอปที่ใช้งานได้จริง ด้วย React, Node.js และฐานข้อมูลสมัยใหม่
             <br />
-            Transforming Complex Logic into Visual Elegance.
+            พร้อมช่วยธุรกิจของคุณเติบโตด้วยโซลูชันดิจิทัล
           </p>
 
-          <div className="flex justify-center gap-4 pt-6">
+          <div className="flex flex-col sm:flex-row justify-center gap-4 pt-8">
             <motion.a
               href="#connect"
-              animate={{ boxShadow: ['0px 0px 20px rgba(99,102,241,0.3)', '0px 0px 40px rgba(99,102,241,0.5)', '0px 0px 20px rgba(99,102,241,0.3)'] }}
+              animate={{ boxShadow: ['0px 0px 25px rgba(99,102,241,0.4)', '0px 0px 50px rgba(99,102,241,0.6)', '0px 0px 25px rgba(99,102,241,0.4)'] }}
               transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
-              className="px-10 py-4 rounded-full text-[10px] font-semibold uppercase tracking-[0.35em]
-                border border-indigo-500/50
-                bg-indigo-500/20 dark:bg-indigo-500/30 backdrop-blur-sm
-                hover:bg-indigo-500/30 dark:hover:bg-indigo-500/40
-                text-white
-                transition-all duration-300 group overflow-hidden relative"
+              className="px-8 py-4 rounded-full text-sm font-bold uppercase tracking-widest
+                bg-indigo-500 hover:bg-indigo-600
+                text-white border-2 border-indigo-500
+                transition-colors duration-300"
             >
-              <span className="relative z-10">Contact Me</span>
+              จ้างงานเลย
             </motion.a>
             <motion.a
               href="#works"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              className="px-10 py-4 rounded-full text-[10px] font-semibold uppercase tracking-[0.35em]
-                border border-neutral-300/60 dark:border-white/10
-                bg-white/60 dark:bg-white/5 backdrop-blur-sm
-                hover:border-indigo-500/40 dark:hover:border-indigo-500/50
+              className="px-8 py-4 rounded-full text-sm font-bold uppercase tracking-widest
+                border-2 border-neutral-400 dark:border-white/30
+                bg-transparent hover:bg-white/10 dark:hover:bg-white/5
                 text-neutral-700 dark:text-white/90
                 transition-all duration-300"
             >
-              See Projects
+              ดูผลงาน
             </motion.a>
           </div>
         </motion.div>
@@ -507,6 +518,7 @@ export default function App() {
               <ProjectItem
                 key={i}
                 title={proj.title}
+                description={proj.description}
                 tags={proj.tags}
                 link={proj.link}
                 githubUrl={proj.githubUrl}
