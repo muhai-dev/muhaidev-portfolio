@@ -7,7 +7,7 @@ import {
   AnimatePresence,
   useMotionValue,
 } from 'framer-motion';
-import { Database, ExternalLink, Terminal, Layers, Layout, Code, Sun, Moon } from 'lucide-react';
+import { Database, ExternalLink, Terminal, Layers, Layout, Code, Sun, Moon, Github, Menu, X } from 'lucide-react';
 import ContactForm from './components/ContactForm';
 
 const MagneticCursor = () => {
@@ -69,57 +69,97 @@ const SkillCard = ({ title, skills, icon: Icon, accentClass }) => (
   </motion.div>
 );
 
-const ProjectItem = ({ title, tags, link, gradientClass, index }) => {
+const tagColors = {
+  React: 'bg-cyan-500/15 text-cyan-400 dark:text-cyan-300 border-cyan-500/20',
+  Tailwind: 'bg-sky-500/15 text-sky-400 dark:text-sky-300 border-sky-500/20',
+  Fullstack: 'bg-indigo-500/15 text-indigo-400 dark:text-indigo-300 border-indigo-500/20',
+  'Node.js': 'bg-emerald-500/15 text-emerald-400 dark:text-emerald-300 border-emerald-500/20',
+  mongodb: 'bg-green-500/15 text-green-400 dark:text-green-300 border-green-500/20',
+};
+
+const ProjectItem = ({ title, tags, link, githubUrl, gradientClass, index }) => {
   const [isHovered, setIsHovered] = useState(false);
+
+  const getTagStyle = (tag) => tagColors[tag] || 'bg-white/10 text-white/70 dark:text-white/60 border-white/10';
 
   return (
     <motion.div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => window.open(link, '_blank')}
-      whileHover={{ scale: 1.002 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-      className="py-14 md:py-16 border-b border-neutral-200/60 dark:border-white/[0.06] relative group cursor-pointer overflow-hidden
-        hover:bg-white/30 dark:hover:bg-white/[0.02] transition-colors duration-300
-        rounded-lg -mx-2 px-2 hover:shadow-[0_0_30px_-10px_rgba(99,102,241,0.15)] dark:hover:shadow-[0_0_30px_-10px_rgba(99,102,241,0.2)]"
+      whileHover={{ y: -8 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+      className="relative group cursor-pointer overflow-hidden rounded-2xl min-h-[200px]
+        bg-white/40 dark:bg-white/[0.03] backdrop-blur-xl
+        border border-white/10
+        shadow-lg hover:shadow-xl hover:shadow-indigo-500/10
+        transition-shadow duration-300"
     >
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-        <div className="flex items-center gap-8 md:gap-10">
-          <span className="text-neutral-400 dark:text-white/10 font-mono text-xs tracking-tight">[{index + 1}]</span>
-          <h3 className="text-3xl md:text-7xl font-bold uppercase tracking-tight leading-tight text-neutral-700 dark:text-white/80 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors duration-300">
-            {title}
-          </h3>
-        </div>
-        <div className="flex flex-wrap gap-2 opacity-60 group-hover:opacity-100 transition-opacity duration-300 items-center">
+      <div className="p-8 md:p-10 relative z-10 min-h-[200px] flex flex-col justify-between">
+        <span className="text-neutral-400 dark:text-white/20 font-mono text-xs tracking-tight">0{index + 1}</span>
+        <h3 className="text-2xl md:text-4xl font-bold uppercase tracking-tight mt-2 text-neutral-800 dark:text-white/90 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors">
+          {title}
+        </h3>
+        <div className="flex flex-wrap gap-2 mt-4">
           {tags.map((tag, i) => (
             <span
               key={i}
-              className="text-[10px] tracking-[0.15em] uppercase px-3 py-1.5 rounded-lg border border-neutral-300/50 dark:border-white/10 bg-white/30 dark:bg-white/5"
+              className={`px-3 py-1 rounded-full text-[10px] font-medium tracking-wider uppercase border ${getTagStyle(tag)}`}
             >
               {tag}
             </span>
           ))}
-          <div className="w-10 h-10 rounded-full border border-neutral-300 dark:border-white/20 flex items-center justify-center text-neutral-600 dark:text-white translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
-            <ExternalLink size={16} />
-          </div>
         </div>
       </div>
 
-      <AnimatePresence>
-        {isHovered && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, x: '15%' }}
-            animate={{ opacity: 0.08, scale: 1, x: '8%' }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className={`absolute top-0 right-0 w-[50%] h-full bg-gradient-to-l pointer-events-none blur-3xl ${gradientClass}`}
-          />
-        )}
-      </AnimatePresence>
+      {/* View Project overlay */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{
+          opacity: isHovered ? 1 : 0,
+          pointerEvents: isHovered ? 'auto' : 'none',
+        }}
+        transition={{ duration: 0.2 }}
+        className="absolute inset-0 z-20 flex flex-col items-center justify-center
+          bg-indigo-600/95 dark:bg-indigo-900/95
+          rounded-2xl"
+      >
+        <span className="text-white font-bold text-lg md:text-xl tracking-wider uppercase drop-shadow-lg">View Project</span>
+        <div className="flex gap-4 mt-2">
+          {githubUrl && (
+            <motion.a
+              href={githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+            >
+              <Github size={20} />
+            </motion.a>
+          )}
+          <motion.a
+            href={link}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+          >
+            <ExternalLink size={20} />
+          </motion.a>
+        </div>
+      </motion.div>
+
+      <div className={`absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${gradientClass}`} />
     </motion.div>
   );
 };
 
 export default function App() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('theme');
@@ -144,26 +184,30 @@ export default function App() {
       title: 'Osara Web',
       tags: ['React', 'Tailwind', 'Fullstack'],
       link: 'https://osara-web.vercel.app/',
-      gradientClass: 'from-indigo-500/0 to-indigo-500/20',
+      githubUrl: '',
+      gradientClass: 'from-indigo-500/20 to-indigo-600/10',
     },
     {
       title: 'Exam dashboard',
       tags: ['Node.js', 'mongodb'],
       link: 'https://exam-dashboard-uuii.vercel.app/',
-      gradientClass: 'from-purple-500/0 to-purple-500/20',
+      githubUrl: '',
+      gradientClass: 'from-purple-500/20 to-purple-600/10',
     },
     {
       title: 'Pokemon App',
-      tags: ['React' , 'Tailwind' , 'Fullstack'],
+      tags: ['React', 'Tailwind', 'Fullstack'],
       link: 'https://pikachu-project-jd9e.vercel.app/',
-      gradientClass: 'from-cyan-500/0 to-cyan-500/20',
+      githubUrl: '',
+      gradientClass: 'from-cyan-500/20 to-cyan-600/10',
     },
     {
       title: 'Foucus website',
-      tags: ['React' , 'Tailwind' , 'Fullstack'],
+      tags: ['React', 'Tailwind', 'Fullstack'],
       link: 'https://focus-web-ten.vercel.app/',
-      gradientClass: 'from-cyan-500/0 to-cyan-500/20',
-    }
+      githubUrl: '',
+      gradientClass: 'from-cyan-500/20 to-cyan-600/10',
+    },
   ];
 
   return (
@@ -189,6 +233,7 @@ export default function App() {
           DEV
         </motion.div>
 
+        {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-8
           bg-white/70 dark:bg-white/[0.03] backdrop-blur-xl
           px-8 py-3 rounded-full border border-neutral-200/60 dark:border-white/[0.06]
@@ -206,7 +251,20 @@ export default function App() {
           ))}
         </div>
 
-        <div className="flex items-center gap-2 pointer-events-auto">
+        {/* Mobile hamburger */}
+        <div className="flex items-center gap-2 pointer-events-auto md:hidden">
+          <motion.button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            whileTap={{ scale: 0.95 }}
+            className="w-12 h-12 rounded-full flex items-center justify-center
+              bg-white/50 dark:bg-white/5 border border-neutral-200/60 dark:border-white/10
+              text-neutral-600 dark:text-white/60"
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </motion.button>
+        </div>
+
+        <div className="hidden md:flex items-center gap-2 pointer-events-auto">
           <motion.button
             onClick={() => setIsDark(!isDark)}
             whileHover={{ scale: 1.05 }}
@@ -231,19 +289,109 @@ export default function App() {
         </div>
       </nav>
 
+      {/* Mobile menu overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-40 bg-black/50 dark:bg-black/70 backdrop-blur-sm md:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+            className="fixed top-0 right-0 bottom-0 w-[min(320px,85vw)] z-50
+              bg-white dark:bg-neutral-900 border-l border-neutral-200/60 dark:border-white/10
+              flex flex-col pt-24 px-8 md:hidden"
+          >
+            <div className="flex flex-col gap-2">
+              {['Stack', 'Works', 'Connect'].map((item) => (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="py-4 px-4 text-lg font-medium tracking-wide
+                    text-neutral-700 dark:text-white/90 hover:text-indigo-500 dark:hover:text-indigo-400
+                    hover:bg-neutral-100 dark:hover:bg-white/5 rounded-xl
+                    transition-colors min-h-[48px] flex items-center"
+                >
+                  {item}
+                </a>
+              ))}
+            </div>
+            <div className="mt-auto pb-8 flex gap-3">
+              <motion.button
+                onClick={() => { setIsDark(!isDark); setMobileMenuOpen(false); }}
+                whileTap={{ scale: 0.95 }}
+                className="w-12 h-12 rounded-full flex items-center justify-center
+                  bg-neutral-100 dark:bg-white/10 border border-neutral-200/60 dark:border-white/10
+                  text-neutral-600 dark:text-white/60"
+              >
+                {isDark ? <Sun size={20} /> : <Moon size={20} />}
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                className="w-12 h-12 rounded-full flex items-center justify-center
+                  bg-neutral-100 dark:bg-white/10 border border-neutral-200/60 dark:border-white/10
+                  text-neutral-600 dark:text-white/60"
+              >
+                <Terminal size={20} />
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Hero Section */}
-      <section className="relative h-screen flex flex-col items-center justify-center text-center px-4">
+      <section className="relative h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+        {/* Animated mesh gradient background */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(99,102,241,0.15),transparent)] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(99,102,241,0.2),transparent)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_80%_50%,rgba(139,92,246,0.08),transparent)] dark:bg-[radial-gradient(ellipse_60%_60%_at_80%_50%,rgba(139,92,246,0.12),transparent)] animate-pulse" style={{ animationDuration: '4s' }} />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_80%,rgba(6,182,212,0.06),transparent)] dark:bg-[radial-gradient(ellipse_50%_50%_at_20%_80%,rgba(6,182,212,0.1),transparent)]" />
+        </div>
+
+        {/* Floating code symbols */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {['</>', '{ }', '=>', '()', '[]', 'async'].map((sym, i) => (
+            <motion.span
+              key={i}
+              className="absolute text-2xl md:text-4xl font-mono text-white/[0.03] dark:text-white/[0.05] select-none"
+              style={{ left: `${15 + i * 14}%`, top: `${20 + (i % 3) * 25}%` }}
+              animate={{
+                y: [0, -20, 0],
+                opacity: [0.03, 0.06, 0.03],
+              }}
+              transition={{
+                duration: 3 + i * 0.5,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            >
+              {sym}
+            </motion.span>
+          ))}
+        </div>
+
         <motion.div
           style={{ scale: scaleHero, opacity: opacityHero }}
           className="space-y-8 md:space-y-10 relative z-10"
         >
-          <h1 className="text-[9vw] md:text-[10vw] font-bold leading-[0.95] tracking-tight uppercase italic
-            text-neutral-900 dark:text-white">
-            Fullstack
+          <h1 className="text-[9vw] md:text-[10vw] font-bold leading-[0.95] tracking-tight uppercase italic">
+            <span className="text-neutral-900 dark:text-white">Fullstack</span>
             <br />
             <span
-              className="text-transparent"
-              style={{ WebkitTextStroke: '1px var(--hero-stroke)' }}
+              className="bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent"
+              style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
             >
               Developer
             </span>
@@ -256,7 +404,22 @@ export default function App() {
             Transforming Complex Logic into Visual Elegance.
           </p>
 
-          <div className="flex justify-center pt-6">
+          <div className="flex justify-center gap-4 pt-6">
+            <motion.a
+              href="#connect"
+              animate={{ boxShadow: ['0px 0px 20px rgba(99,102,241,0.3)', '0px 0px 40px rgba(99,102,241,0.5)', '0px 0px 20px rgba(99,102,241,0.3)'] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              className="px-10 py-4 rounded-full text-[10px] font-semibold uppercase tracking-[0.35em]
+                border border-indigo-500/50
+                bg-indigo-500/20 dark:bg-indigo-500/30 backdrop-blur-sm
+                hover:bg-indigo-500/30 dark:hover:bg-indigo-500/40
+                text-white
+                transition-all duration-300 group overflow-hidden relative"
+            >
+              <span className="relative z-10">Contact Me</span>
+            </motion.a>
             <motion.a
               href="#works"
               whileHover={{ scale: 1.03 }}
@@ -266,12 +429,10 @@ export default function App() {
                 border border-neutral-300/60 dark:border-white/10
                 bg-white/60 dark:bg-white/5 backdrop-blur-sm
                 hover:border-indigo-500/40 dark:hover:border-indigo-500/50
-                hover:shadow-lg hover:shadow-indigo-500/15 dark:hover:shadow-indigo-500/20
                 text-neutral-700 dark:text-white/90
-                transition-all duration-300 group overflow-hidden relative"
+                transition-all duration-300"
             >
-              <span className="relative z-10">See the Projects</span>
-              <div className="absolute inset-0 bg-indigo-500/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+              See Projects
             </motion.a>
           </div>
         </motion.div>
@@ -341,13 +502,14 @@ export default function App() {
             </div>
           </div>
 
-          <div className="flex flex-col border-t border-neutral-200/60 dark:border-white/[0.06]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {projects.map((proj, i) => (
               <ProjectItem
                 key={i}
                 title={proj.title}
                 tags={proj.tags}
                 link={proj.link}
+                githubUrl={proj.githubUrl}
                 gradientClass={proj.gradientClass}
                 index={i}
               />

@@ -105,12 +105,25 @@ export default function ContactForm() {
   const inputBase =
     'w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 dark:bg-white/[0.03] ' +
     'border transition-all duration-200 text-neutral-800 dark:text-white/90 ' +
-    'placeholder-neutral-500 dark:placeholder-white/30 ' +
-    'focus:outline-none focus:ring-2 focus:ring-indigo-500/60 focus:border-indigo-500/50 ' +
-    'focus:shadow-[0_0_20px_-5px_rgba(99,102,241,0.4)]';
+    'placeholder-neutral-500 dark:placeholder-white/30 focus:outline-none ' +
+    'focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500/50';
 
-  const inputError = 'border-red-500/60 dark:border-red-500/50 focus:ring-red-500/40';
+  const inputWrapperBase = 'relative rounded-xl transition-all duration-200 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:ring-offset-2 dark:focus-within:ring-offset-[#050505]';
+  const inputWrapperError = 'focus-within:ring-red-500';
+  const inputError = 'border-red-500/60 dark:border-red-500/50';
   const inputValid = 'border-neutral-300/60 dark:border-white/10';
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.08, delayChildren: 0.1 },
+    },
+  };
+  const staggerItem = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
 
   return (
     <motion.section
@@ -167,19 +180,20 @@ export default function ContactForm() {
             <motion.form
               key="form"
               onSubmit={handleSubmit}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              variants={staggerContainer}
+              initial="hidden"
+              animate={isInView ? 'visible' : 'hidden'}
               exit={{ opacity: 0 }}
               className="bg-white/40 dark:bg-white/[0.03] backdrop-blur-xl
                 border border-neutral-200/60 dark:border-white/[0.06]
                 rounded-2xl p-8 md:p-10 shadow-xl space-y-6"
             >
               {/* Name */}
-              <div>
+              <motion.div variants={staggerItem}>
                 <label className="block text-xs font-medium tracking-[0.15em] uppercase text-neutral-500 dark:text-white/50 mb-2">
                   ชื่อ
                 </label>
-                <div className="relative">
+                <div className={`relative rounded-xl ${inputWrapperBase} ${errors.name ? inputWrapperError : ''}`}>
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400 dark:text-white/30" />
                   <input
                     type="text"
@@ -194,14 +208,14 @@ export default function ContactForm() {
                 {errors.name && (
                   <p className="mt-1.5 text-xs text-red-500 dark:text-red-400">{errors.name}</p>
                 )}
-              </div>
+              </motion.div>
 
               {/* Email */}
-              <div>
+              <motion.div variants={staggerItem}>
                 <label className="block text-xs font-medium tracking-[0.15em] uppercase text-neutral-500 dark:text-white/50 mb-2">
                   อีเมล
                 </label>
-                <div className="relative">
+                <div className={`relative rounded-xl ${inputWrapperBase} ${errors.email ? inputWrapperError : ''}`}>
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400 dark:text-white/30" />
                   <input
                     type="email"
@@ -216,14 +230,14 @@ export default function ContactForm() {
                 {errors.email && (
                   <p className="mt-1.5 text-xs text-red-500 dark:text-red-400">{errors.email}</p>
                 )}
-              </div>
+              </motion.div>
 
               {/* Message */}
-              <div>
+              <motion.div variants={staggerItem}>
                 <label className="block text-xs font-medium tracking-[0.15em] uppercase text-neutral-500 dark:text-white/50 mb-2">
                   รายละเอียด
                 </label>
-                <div className="relative">
+                <div className={`relative rounded-xl ${inputWrapperBase} ${errors.message ? inputWrapperError : ''}`}>
                   <MessageSquare className="absolute left-3 top-4 w-5 h-5 text-neutral-400 dark:text-white/30" />
                   <textarea
                     name="message"
@@ -238,12 +252,13 @@ export default function ContactForm() {
                 {errors.message && (
                   <p className="mt-1.5 text-xs text-red-500 dark:text-red-400">{errors.message}</p>
                 )}
-              </div>
+              </motion.div>
 
               {errors.submit && (
                 <p className="text-sm text-red-500 dark:text-red-400 text-center">{errors.submit}</p>
               )}
 
+              <motion.div variants={staggerItem}>
               <motion.button
                 type="submit"
                 disabled={isLoading}
@@ -266,8 +281,9 @@ export default function ContactForm() {
                   'ส่งข้อความ'
                 )}
               </motion.button>
+              </motion.div>
 
-              <p className="text-center text-xs text-neutral-500 dark:text-white/40 pt-2">
+              <motion.p variants={staggerItem} className="text-center text-xs text-neutral-500 dark:text-white/40 pt-2">
                 หรือ{' '}
                 <a
                   href={DIRECT_INBOX_URL}
@@ -277,7 +293,7 @@ export default function ContactForm() {
                 >
                   ส่งข้อความตรงที่ Facebook
                 </a>
-              </p>
+              </motion.p>
             </motion.form>
           )}
         </AnimatePresence>
