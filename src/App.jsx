@@ -28,7 +28,10 @@ const MagneticCursor = () => {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 w-8 h-8 border border-indigo-500/50 dark:border-indigo-400/50 rounded-full pointer-events-none z-[9999] mix-blend-screen shadow-[0_0_15px_rgba(99,102,241,0.25)] dark:shadow-[0_0_15px_rgba(99,102,241,0.35)]"
+      className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-[9999] mix-blend-screen
+        border border-indigo-500/45 dark:border-indigo-300/60
+        bg-white/5 dark:bg-indigo-300/[0.04]
+        shadow-[0_0_18px_rgba(99,102,241,0.18)] dark:shadow-[0_0_22px_rgba(129,140,248,0.3)]"
       style={{
         x: cursorXSpring,
         y: cursorYSpring,
@@ -43,23 +46,25 @@ const SkillCard = ({ title, skills, icon: Icon, accentClass }) => (
   <motion.div
     whileHover={{ y: -4, scale: 1.01 }}
     transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-    className="relative overflow-hidden rounded-2xl p-8
-      bg-white/60 dark:bg-white/[0.04] backdrop-blur-xl
-      border border-white/40 dark:border-white/[0.06]
-      shadow-sm hover:shadow-lg hover:shadow-indigo-500/5 dark:hover:shadow-indigo-500/10
-      group transition-shadow duration-300"
+    className="theme-panel-strong relative overflow-hidden rounded-3xl p-8
+      group transition-all duration-300 hover:-translate-y-1
+      hover:border-[hsl(var(--surface-border-strong)/0.9)]"
   >
     <div className={`absolute -right-4 -top-4 w-32 h-32 blur-3xl opacity-60 transition-opacity group-hover:opacity-80 ${accentClass}`} />
     <div className="relative z-10">
-      <div className="w-10 h-10 rounded-xl bg-white/50 dark:bg-white/5 flex items-center justify-center mb-6 text-neutral-500 dark:text-white/50 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors duration-300">
+      <div className="theme-icon-shell w-10 h-10 rounded-xl flex items-center justify-center mb-6 text-[hsl(var(--text-soft))] dark:text-white/65 group-hover:text-indigo-500 dark:group-hover:text-cyan-300 transition-colors duration-300">
         <Icon size={20} />
       </div>
-      <h3 className="text-lg font-semibold mb-4 tracking-tight leading-snug text-neutral-800 dark:text-white/90">{title}</h3>
+      <h3 className="text-lg font-semibold mb-4 tracking-tight leading-snug text-neutral-900 dark:text-white">{title}</h3>
       <div className="flex flex-wrap gap-2">
         {skills.map((s, i) => (
           <span
             key={i}
-            className="px-3 py-1.5 bg-white/50 dark:bg-white/5 rounded-lg text-[10px] tracking-[0.12em] uppercase text-neutral-500 dark:text-white/40 group-hover:text-neutral-700 dark:group-hover:text-white/60 transition-colors duration-300"
+            className="px-3 py-1.5 rounded-lg text-[10px] tracking-[0.12em] uppercase
+              bg-[hsl(var(--surface-muted)/0.82)] dark:bg-[hsl(var(--surface-muted)/0.86)]
+              border border-[hsl(var(--surface-border)/0.6)]
+              text-[hsl(var(--text-faint))] dark:text-white/50
+              group-hover:text-neutral-700 dark:group-hover:text-white/70 transition-colors duration-300"
           >
             {s}
           </span>
@@ -80,7 +85,7 @@ const tagColors = {
 const ProjectItem = ({ title, description, tags, link, githubUrl, gradientClass, index }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const getTagStyle = (tag) => tagColors[tag] || 'bg-white/10 text-white/70 dark:text-white/60 border-white/10';
+  const getTagStyle = (tag) => tagColors[tag] || 'bg-[hsl(var(--surface-muted)/0.75)] text-[hsl(var(--text-soft))] dark:text-white/60 border-[hsl(var(--surface-border)/0.45)]';
 
   return (
     <motion.div
@@ -88,19 +93,18 @@ const ProjectItem = ({ title, description, tags, link, githubUrl, gradientClass,
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => window.open(link, '_blank')}
       whileHover={{ y: -12, transition: { duration: 0.2 } }}
-      className="relative group cursor-pointer overflow-hidden rounded-2xl min-h-[240px]
-        bg-white/40 dark:bg-white/[0.03] backdrop-blur-xl
-        border border-white/10
-        shadow-lg hover:shadow-2xl hover:shadow-indigo-500/20 dark:hover:shadow-indigo-500/15
-        transition-shadow duration-300"
+      className="theme-panel-strong relative group cursor-pointer overflow-hidden rounded-3xl min-h-[240px]
+        border-[hsl(var(--surface-border)/0.75)]
+        hover:border-[hsl(var(--surface-border-strong)/0.95)]
+        transition-all duration-300"
     >
       <div className="p-8 md:p-10 relative z-10 min-h-[240px] flex flex-col justify-between">
-        <span className="text-neutral-400 dark:text-white/20 font-mono text-xs tracking-tight">0{index + 1}</span>
-        <h3 className="text-2xl md:text-4xl font-bold uppercase tracking-tight mt-2 text-neutral-800 dark:text-white/90 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors">
+        <span className="text-[hsl(var(--text-faint))] dark:text-white/25 font-mono text-xs tracking-tight">0{index + 1}</span>
+        <h3 className="text-2xl md:text-4xl font-bold uppercase tracking-tight mt-2 text-neutral-900 dark:text-white group-hover:text-neutral-950 dark:group-hover:text-white transition-colors">
           {title}
         </h3>
         {description && (
-          <p className="text-sm text-neutral-500 dark:text-white/40 mt-2 line-clamp-2 leading-relaxed">
+          <p className="text-sm text-[hsl(var(--text-soft))] dark:text-white/55 mt-2 line-clamp-2 leading-relaxed">
             {description}
           </p>
         )}
@@ -125,8 +129,9 @@ const ProjectItem = ({ title, description, tags, link, githubUrl, gradientClass,
         }}
         transition={{ duration: 0.2 }}
         className="absolute inset-0 z-20 flex flex-col items-center justify-center
-          bg-indigo-600/95 dark:bg-indigo-900/95
-          rounded-2xl"
+          bg-[linear-gradient(145deg,rgba(79,70,229,0.95),rgba(34,211,238,0.92))]
+          dark:bg-[linear-gradient(145deg,rgba(79,70,229,0.94),rgba(14,165,233,0.88))]
+          rounded-3xl"
       >
         <span className="text-white font-bold text-lg md:text-xl tracking-wider uppercase drop-shadow-lg">View Project</span>
         <div className="flex gap-4 mt-4">
@@ -225,15 +230,15 @@ export default function App() {
   ];
 
   return (
-    <div className="min-h-screen overflow-x-hidden font-sans
-      bg-neutral-50 dark:bg-[#050505] text-neutral-800 dark:text-white/90
+    <div className="theme-shell min-h-screen overflow-x-hidden font-sans
+      bg-background text-foreground
       selection:bg-indigo-500/20 dark:selection:bg-indigo-500/30 selection:text-white">
       <MagneticCursor />
 
       {/* Progress Rail */}
-      <div className="fixed top-0 left-0 w-full h-[1px] bg-neutral-200/80 dark:bg-white/5 z-[100]">
+      <div className="fixed top-0 left-0 w-full h-[1px] bg-[hsl(var(--surface-border)/0.4)] z-[100]">
         <motion.div
-          className="h-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.4)] origin-left"
+          className="h-full bg-indigo-500 shadow-[0_0_12px_rgba(99,102,241,0.45)] origin-left"
           style={{ scaleX: smoothY }}
         />
       </div>
@@ -248,16 +253,14 @@ export default function App() {
         </motion.div>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-8
-          bg-white/70 dark:bg-white/[0.03] backdrop-blur-xl
-          px-8 py-3 rounded-full border border-neutral-200/60 dark:border-white/[0.06]
-          shadow-sm dark:shadow-none pointer-events-auto">
+        <div className="theme-panel hidden md:flex items-center gap-8
+          px-8 py-3 rounded-full pointer-events-auto">
           {['Stack', 'Works', 'Connect'].map((item) => (
             <a
               key={item}
               href={`#${item.toLowerCase()}`}
               className="text-[10px] tracking-[0.35em] uppercase font-medium
-                text-neutral-500 dark:text-white/55 hover:text-indigo-500 dark:hover:text-indigo-400
+                text-[hsl(var(--text-faint))] dark:text-white/60 hover:text-indigo-500 dark:hover:text-cyan-300
                 transition-colors duration-300 hover:drop-shadow-[0_0_8px_rgba(99,102,241,0.3)]"
             >
               {item}
@@ -270,9 +273,8 @@ export default function App() {
           <motion.button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             whileTap={{ scale: 0.95 }}
-            className="w-12 h-12 rounded-full flex items-center justify-center
-              bg-white/50 dark:bg-white/5 border border-neutral-200/60 dark:border-white/10
-              text-neutral-600 dark:text-white/60"
+            className="theme-panel w-12 h-12 rounded-full flex items-center justify-center
+              text-[hsl(var(--text-soft))] dark:text-white/70"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </motion.button>
@@ -283,9 +285,8 @@ export default function App() {
             onClick={() => setIsDark(!isDark)}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="w-10 h-10 rounded-full flex items-center justify-center
-              bg-white/50 dark:bg-white/5 border border-neutral-200/60 dark:border-white/10
-              text-neutral-600 dark:text-white/40 hover:text-indigo-500 dark:hover:text-indigo-400
+            className="theme-panel w-10 h-10 rounded-full flex items-center justify-center
+              text-[hsl(var(--text-soft))] dark:text-white/55 hover:text-indigo-500 dark:hover:text-cyan-300
               hover:shadow-md hover:shadow-indigo-500/10 transition-all duration-300"
           >
             {isDark ? <Sun size={18} /> : <Moon size={18} />}
@@ -293,9 +294,8 @@ export default function App() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="w-10 h-10 rounded-full flex items-center justify-center
-              bg-white/50 dark:bg-white/5 border border-neutral-200/60 dark:border-white/10
-              text-neutral-600 dark:text-white/40 hover:text-indigo-500 dark:hover:text-indigo-400
+            className="theme-panel w-10 h-10 rounded-full flex items-center justify-center
+              text-[hsl(var(--text-soft))] dark:text-white/55 hover:text-indigo-500 dark:hover:text-cyan-300
               hover:shadow-md hover:shadow-indigo-500/10 transition-all duration-300"
           >
             <Terminal size={16} />
@@ -311,7 +311,7 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 bg-black/50 dark:bg-black/70 backdrop-blur-sm md:hidden"
+            className="fixed inset-0 z-40 bg-slate-950/35 dark:bg-slate-950/72 backdrop-blur-sm md:hidden"
             onClick={() => setMobileMenuOpen(false)}
           />
         )}
@@ -323,9 +323,8 @@ export default function App() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            className="fixed top-0 right-0 bottom-0 w-[min(320px,85vw)] z-50
-              bg-white dark:bg-neutral-900 border-l border-neutral-200/60 dark:border-white/10
-              flex flex-col pt-24 px-8 md:hidden"
+            className="theme-panel fixed top-0 right-0 bottom-0 w-[min(320px,85vw)] z-50
+              rounded-none border-l flex flex-col pt-24 px-8 md:hidden"
           >
             <div className="flex flex-col gap-2">
               {['Stack', 'Works', 'Connect'].map((item) => (
@@ -334,8 +333,8 @@ export default function App() {
                   href={`#${item.toLowerCase()}`}
                   onClick={() => setMobileMenuOpen(false)}
                   className="py-4 px-4 text-lg font-medium tracking-wide
-                    text-neutral-700 dark:text-white/90 hover:text-indigo-500 dark:hover:text-indigo-400
-                    hover:bg-neutral-100 dark:hover:bg-white/5 rounded-xl
+                    text-neutral-700 dark:text-white/90 hover:text-indigo-500 dark:hover:text-cyan-300
+                    hover:bg-[hsl(var(--surface-muted)/0.9)] dark:hover:bg-white/5 rounded-xl
                     transition-colors min-h-[48px] flex items-center"
                 >
                   {item}
@@ -346,16 +345,14 @@ export default function App() {
               <motion.button
                 onClick={() => { setIsDark(!isDark); setMobileMenuOpen(false); }}
                 whileTap={{ scale: 0.95 }}
-                className="w-12 h-12 rounded-full flex items-center justify-center
-                  bg-neutral-100 dark:bg-white/10 border border-neutral-200/60 dark:border-white/10
+                className="theme-panel w-12 h-12 rounded-full flex items-center justify-center
                   text-neutral-600 dark:text-white/60"
               >
                 {isDark ? <Sun size={20} /> : <Moon size={20} />}
               </motion.button>
               <motion.button
                 whileTap={{ scale: 0.95 }}
-                className="w-12 h-12 rounded-full flex items-center justify-center
-                  bg-neutral-100 dark:bg-white/10 border border-neutral-200/60 dark:border-white/10
+                className="theme-panel w-12 h-12 rounded-full flex items-center justify-center
                   text-neutral-600 dark:text-white/60"
               >
                 <Terminal size={20} />
@@ -412,7 +409,7 @@ export default function App() {
           </h1>
 
           <p className="max-w-2xl mx-auto text-base md:text-lg font-medium tracking-wide
-            text-neutral-600 dark:text-white/50">
+            text-[hsl(var(--text-soft))] dark:text-white/60">
             สร้างเว็บไซต์และแอปที่ใช้งานได้จริง ด้วย React, Node.js และฐานข้อมูลสมัยใหม่
             <br />
             พร้อมช่วยธุรกิจของคุณเติบโตด้วยโซลูชันดิจิทัล
@@ -427,7 +424,8 @@ export default function App() {
               whileTap={{ scale: 0.98 }}
               className="px-8 py-4 rounded-full text-sm font-bold uppercase tracking-widest
                 bg-indigo-500 hover:bg-indigo-600
-                text-white border-2 border-indigo-500
+                text-white border border-indigo-400/80
+                shadow-[0_12px_35px_rgba(99,102,241,0.25)]
                 transition-colors duration-300"
             >
               จ้างงานเลย
@@ -437,10 +435,10 @@ export default function App() {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              className="px-8 py-4 rounded-full text-sm font-bold uppercase tracking-widest
-                border-2 border-neutral-400 dark:border-white/30
-                bg-transparent hover:bg-white/10 dark:hover:bg-white/5
-                text-neutral-700 dark:text-white/90
+              className="theme-panel px-8 py-4 rounded-full text-sm font-bold uppercase tracking-widest
+                border-[hsl(var(--surface-border)/0.8)]
+                hover:bg-white/60 dark:hover:bg-white/[0.06]
+                text-neutral-800 dark:text-white/90
                 transition-all duration-300"
             >
               ดูผลงาน
@@ -454,48 +452,48 @@ export default function App() {
       </section>
 
       {/* Stack Section */}
-      <section id="stack" className="px-6 md:px-10 py-32 md:py-40 max-w-7xl mx-auto">
-        <div className="mb-20 md:mb-24 space-y-3">
-          <h2 className="text-4xl md:text-5xl font-bold uppercase italic tracking-tight leading-tight text-neutral-900 dark:text-white">
-            My Skills
-          </h2>
-          <p className="text-[11px] tracking-[0.2em] uppercase text-neutral-500 dark:text-white/25">
-            The Tech Behind the Logic
-          </p>
-        </div>
+      <section id="stack" className="theme-section px-6 md:px-10 py-32 md:py-40">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-20 md:mb-24 space-y-3">
+            <h2 className="text-4xl md:text-5xl font-bold uppercase italic tracking-tight leading-tight text-neutral-900 dark:text-white">
+              My Skills
+            </h2>
+            <p className="theme-kicker text-[11px] tracking-[0.2em] uppercase">
+              The Tech Behind the Logic
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <SkillCard
-            title="Frontend"
-            skills={['HTML', 'CSS', 'JavaScript', 'React', 'Tailwind CSS']}
-            icon={Layout}
-            accentClass="bg-indigo-500/5 group-hover:bg-indigo-500/10"
-          />
-          <SkillCard
-            title="Backend"
-            skills={['Node.js', 'Express.js', 'REST APIs', ]}
-            icon={Database}
-            accentClass="bg-purple-500/5 group-hover:bg-purple-500/10"
-          />
-          <SkillCard
-            title="Databases"
-            skills={['MongoDB', 'PostgreSQL']}
-            icon={Layers}
-            accentClass="bg-cyan-500/5 group-hover:bg-cyan-500/10"
-          />
-          <SkillCard
-            title="Programming Languages"
-            skills={['Python', 'C++', 'C']}
-            icon={Code}
-            accentClass="bg-cyan-500/5 group-hover:bg-cyan-500/10"
-          />
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <SkillCard
+              title="Frontend"
+              skills={['HTML', 'CSS', 'JavaScript', 'React', 'Tailwind CSS']}
+              icon={Layout}
+              accentClass="bg-indigo-500/10 group-hover:bg-indigo-500/20"
+            />
+            <SkillCard
+              title="Backend"
+              skills={['Node.js', 'Express.js', 'REST APIs']}
+              icon={Database}
+              accentClass="bg-purple-500/10 group-hover:bg-purple-500/20"
+            />
+            <SkillCard
+              title="Databases"
+              skills={['MongoDB', 'PostgreSQL']}
+              icon={Layers}
+              accentClass="bg-cyan-500/10 group-hover:bg-cyan-500/20"
+            />
+            <SkillCard
+              title="Programming Languages"
+              skills={['Python', 'C++', 'C']}
+              icon={Code}
+              accentClass="bg-sky-500/10 group-hover:bg-sky-500/20"
+            />
+          </div>
         </div>
       </section>
 
       {/* Work Section */}
-      <section id="works" className="px-6 md:px-10 py-32 md:py-40
-        bg-neutral-100/80 dark:bg-[#080808] backdrop-blur-sm
-        border-y border-neutral-200/60 dark:border-white/[0.06]">
+      <section id="works" className="theme-section theme-section-alt section-divider px-6 md:px-10 py-32 md:py-40 border-y">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end mb-24 md:mb-40 gap-8 md:gap-10">
             <h2 className="text-5xl md:text-[10vw] font-bold uppercase tracking-tight italic leading-[0.85] text-neutral-900 dark:text-white">
@@ -504,10 +502,10 @@ export default function App() {
               <span className="text-neutral-400 dark:text-white/10">Archive.</span>
             </h2>
             <div className="space-y-4 md:space-y-6 text-right hidden md:block">
-              <div className="text-[10px] tracking-[0.35em] uppercase text-indigo-500 dark:text-indigo-400 font-semibold">
+              <div className="text-[10px] tracking-[0.35em] uppercase text-indigo-500 dark:text-cyan-300 font-semibold">
                 Showcase 2025-2026
               </div>
-              <p className="max-w-xs text-[10px] tracking-[0.12em] leading-relaxed uppercase italic text-neutral-500 dark:text-white/25">
+              <p className="max-w-xs text-[10px] tracking-[0.12em] leading-relaxed uppercase italic text-[hsl(var(--text-faint))] dark:text-white/30">
                 Explore the architecture of modern web solutions.
               </p>
             </div>
@@ -533,16 +531,15 @@ export default function App() {
       <ContactForm />
 
       {/* Footer */}
-      <footer className="px-6 md:px-10 py-10 md:py-12
-        border-t border-neutral-200/60 dark:border-white/[0.06]
-        flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8
-        text-[9px] tracking-[0.4em] uppercase text-neutral-500 dark:text-white/25">
-        <p>This is only test app</p>
+      <footer className="theme-section section-divider px-6 md:px-10 py-10 md:py-12
+        border-t flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8
+        text-[9px] tracking-[0.4em] uppercase text-[hsl(var(--text-faint))] dark:text-white/30">
+        <p>Available for freelance and product work</p>
         <div className="flex gap-8 md:gap-12 font-medium tracking-[0.15em]">
           <p>Yala</p>
           <div className="flex items-center gap-2">
             <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse" />
-            <p>just port folio</p>
+            <p>Open for new projects</p>
           </div>
         </div>
       </footer>

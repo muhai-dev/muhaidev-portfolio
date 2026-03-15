@@ -2,8 +2,8 @@ import React, { useState, useRef } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { User, Mail, MessageSquare, CheckCircle2, Loader2 } from 'lucide-react';
 
-const FORMSPREE_ID = 'YOUR_FORM_ID'; // Replace with your Formspree form ID from formspree.io
-const DIRECT_INBOX_URL = 'https://www.facebook.com/messages'; // Replace with your Facebook/IM link
+const CONTACT_EMAIL = 'muhaiminsatae2555@gmail.com';
+const FACEBOOK_INBOX_URL = 'https://www.facebook.com/messages';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -69,49 +69,35 @@ export default function ContactForm() {
     setIsSuccess(false);
 
     try {
-      // Option 1: Formspree (replace FORMSPREE_ID)
-      if (FORMSPREE_ID && FORMSPREE_ID !== 'YOUR_FORM_ID') {
-        const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: formData.name,
-            email: formData.email,
-            message: formData.message,
-          }),
-        });
-        if (!res.ok) throw new Error('ส่งไม่สำเร็จ');
-      } else {
-        // Option 2: mailto fallback
-        await new Promise((r) => setTimeout(r, 1500));
-        const subject = encodeURIComponent(`[Portfolio] ${formData.name}`);
-        const body = encodeURIComponent(
-          `ชื่อ: ${formData.name}\nอีเมล: ${formData.email}\n\nรายละเอียด:\n${formData.message}`
-        );
-        window.location.href = `mailto:muhaiminsatae2555@gmail.com?subject=${subject}&body=${body}`;
-      }
+      const subject = encodeURIComponent(`[Portfolio] ${formData.name}`);
+      const body = encodeURIComponent(
+        `ชื่อ: ${formData.name}\nอีเมล: ${formData.email}\n\nรายละเอียด:\n${formData.message}`
+      );
+      const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(CONTACT_EMAIL)}&su=${subject}&body=${body}`;
+
+      window.open(gmailComposeUrl, '_blank', 'noopener,noreferrer');
 
       setIsSuccess(true);
       setFormData({ name: '', email: '', message: '' });
       setErrors({});
       setTouched({});
     } catch (err) {
-      setErrors({ submit: 'ส่งไม่สำเร็จ กรุณาลองใหม่อีกครั้ง' });
+      setErrors({ submit: err.message || 'ส่งไม่สำเร็จ กรุณาลองใหม่อีกครั้ง' });
     } finally {
       setIsLoading(false);
     }
   };
 
   const inputBase =
-    'w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 dark:bg-white/[0.03] ' +
-    'border transition-all duration-200 text-neutral-800 dark:text-white/90 ' +
-    'placeholder-neutral-500 dark:placeholder-white/30 focus:outline-none ' +
-    'focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500/50';
+    'w-full pl-11 pr-4 py-3 rounded-xl bg-[hsl(var(--surface-muted)/0.82)] dark:bg-[hsl(var(--surface-muted)/0.9)] ' +
+    'border border-[hsl(var(--surface-border)/0.7)] transition-all duration-200 text-neutral-900 dark:text-white ' +
+    'placeholder-[hsl(var(--text-faint))] dark:placeholder-white/35 focus:outline-none ' +
+    'focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-400/60';
 
-  const inputWrapperBase = 'relative rounded-xl transition-all duration-200 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:ring-offset-2 dark:focus-within:ring-offset-[#050505]';
+  const inputWrapperBase = 'relative rounded-xl transition-all duration-200 focus-within:ring-2 focus-within:ring-indigo-500/40 focus-within:ring-offset-2 focus-within:ring-offset-white/40 dark:focus-within:ring-offset-[hsl(var(--background))]';
   const inputWrapperError = 'focus-within:ring-red-500';
   const inputError = 'border-red-500/60 dark:border-red-500/50';
-  const inputValid = 'border-neutral-300/60 dark:border-white/10';
+  const inputValid = 'border-[hsl(var(--surface-border)/0.7)] dark:border-[hsl(var(--surface-border)/0.7)]';
 
   const staggerContainer = {
     hidden: { opacity: 0 },
@@ -132,14 +118,14 @@ export default function ContactForm() {
       initial={{ opacity: 0, y: 24 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
       transition={{ type: 'spring', stiffness: 400, damping: 28, duration: 0.5 }}
-      className="px-4 sm:px-6 md:px-10 py-24 md:py-40 overflow-x-hidden"
+      className="theme-section theme-section-alt px-4 sm:px-6 md:px-10 py-24 md:py-40 overflow-x-hidden"
     >
       <div className="max-w-xl mx-auto w-full min-w-0">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold uppercase italic tracking-tight text-neutral-900 dark:text-white mb-3">
             Get in Touch
           </h2>
-          <p className="text-sm text-neutral-500 dark:text-white/40 tracking-wide">
+          <p className="theme-kicker text-sm tracking-wide">
             มีโปรเจกต์ในใจ? ส่งข้อความมาคุยกันได้เลย
           </p>
         </div>
@@ -152,26 +138,25 @@ export default function ContactForm() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              className="bg-white/50 dark:bg-white/[0.04] backdrop-blur-xl border border-white/20 dark:border-white/[0.08]
-                rounded-2xl p-12 text-center"
+              className="theme-panel-strong rounded-3xl p-12 text-center"
             >
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 20, delay: 0.1 }}
-                className="w-16 h-16 mx-auto mb-6 rounded-full bg-emerald-500/20 dark:bg-emerald-500/30
+                className="w-16 h-16 mx-auto mb-6 rounded-full bg-emerald-500/20 dark:bg-emerald-400/20
                   flex items-center justify-center"
               >
                 <CheckCircle2 className="w-10 h-10 text-emerald-500" strokeWidth={2} />
               </motion.div>
-              <h3 className="text-2xl font-bold text-neutral-800 dark:text-white mb-2">Message Sent!</h3>
-              <p className="text-neutral-500 dark:text-white/50 text-sm mb-6">
-                I will get back to you soon.
+              <h3 className="text-2xl font-bold text-neutral-900 dark:text-white mb-2">Ready to Send</h3>
+              <p className="theme-muted text-sm mb-6">
+                Gmail opened in a new tab. If you prefer, you can message me on Facebook instead.
               </p>
               <button
                 type="button"
                 onClick={() => setIsSuccess(false)}
-                className="text-sm text-indigo-400 hover:text-indigo-300 underline underline-offset-2 transition-colors"
+                className="theme-link text-sm underline underline-offset-2"
               >
                 ส่งข้อความอีกครั้ง
               </button>
@@ -184,17 +169,15 @@ export default function ContactForm() {
               initial="hidden"
               animate={isInView ? 'visible' : 'hidden'}
               exit={{ opacity: 0 }}
-              className="bg-white/40 dark:bg-white/[0.03] backdrop-blur-xl
-                border border-neutral-200/60 dark:border-white/[0.06]
-                rounded-2xl p-6 sm:p-8 md:p-10 shadow-xl space-y-6 w-full max-w-full overflow-hidden"
+              className="theme-panel-strong rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl space-y-6 w-full max-w-full overflow-hidden"
             >
               {/* Name */}
               <motion.div variants={staggerItem}>
-                <label className="block text-xs font-medium tracking-[0.15em] uppercase text-neutral-500 dark:text-white/50 mb-2">
+                <label className="theme-kicker block text-xs font-medium tracking-[0.15em] uppercase mb-2">
                   ชื่อ
                 </label>
                 <div className={`relative rounded-xl ${inputWrapperBase} ${errors.name ? inputWrapperError : ''}`}>
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400 dark:text-white/30" />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[hsl(var(--text-faint))] dark:text-white/35" />
                   <input
                     type="text"
                     name="name"
@@ -212,11 +195,11 @@ export default function ContactForm() {
 
               {/* Email */}
               <motion.div variants={staggerItem}>
-                <label className="block text-xs font-medium tracking-[0.15em] uppercase text-neutral-500 dark:text-white/50 mb-2">
+                <label className="theme-kicker block text-xs font-medium tracking-[0.15em] uppercase mb-2">
                   อีเมล
                 </label>
                 <div className={`relative rounded-xl ${inputWrapperBase} ${errors.email ? inputWrapperError : ''}`}>
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400 dark:text-white/30" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[hsl(var(--text-faint))] dark:text-white/35" />
                   <input
                     type="email"
                     name="email"
@@ -234,11 +217,11 @@ export default function ContactForm() {
 
               {/* Message */}
               <motion.div variants={staggerItem}>
-                <label className="block text-xs font-medium tracking-[0.15em] uppercase text-neutral-500 dark:text-white/50 mb-2">
+                <label className="theme-kicker block text-xs font-medium tracking-[0.15em] uppercase mb-2">
                   รายละเอียด
                 </label>
                 <div className={`relative rounded-xl ${inputWrapperBase} ${errors.message ? inputWrapperError : ''}`}>
-                  <MessageSquare className="absolute left-3 top-4 w-5 h-5 text-neutral-400 dark:text-white/30" />
+                  <MessageSquare className="absolute left-3 top-4 w-5 h-5 text-[hsl(var(--text-faint))] dark:text-white/35" />
                   <textarea
                     name="message"
                     value={formData.message}
@@ -267,8 +250,8 @@ export default function ContactForm() {
                 transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                 className="w-full py-4 rounded-xl font-semibold text-sm tracking-[0.2em] uppercase
                   bg-indigo-500 hover:bg-indigo-600 disabled:opacity-70 disabled:cursor-not-allowed
-                  text-white border border-indigo-500/50
-                  shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40
+                  text-white border border-indigo-400/70
+                  shadow-[0_16px_40px_rgba(99,102,241,0.25)] hover:shadow-[0_18px_48px_rgba(99,102,241,0.35)]
                   focus:ring-2 focus:ring-indigo-500/60 focus:outline-none
                   transition-all duration-300 flex items-center justify-center gap-2"
               >
@@ -283,15 +266,15 @@ export default function ContactForm() {
               </motion.button>
               </motion.div>
 
-              <motion.p variants={staggerItem} className="text-center text-xs text-neutral-500 dark:text-white/40 pt-2">
+              <motion.p variants={staggerItem} className="theme-muted text-center text-xs pt-2">
                 หรือ{' '}
                 <a
-                  href={DIRECT_INBOX_URL}
+                  href={FACEBOOK_INBOX_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-indigo-400 hover:text-indigo-300 underline underline-offset-2 transition-colors"
+                  className="theme-link underline underline-offset-2"
                 >
-                  ส่งข้อความตรงที่ Facebook
+                  ถ้าไม่สะดวก ส่งข้อความมาที่ Facebook ได้เลย
                 </a>
               </motion.p>
             </motion.form>
