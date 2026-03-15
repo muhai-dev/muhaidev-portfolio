@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   motion,
   useScroll,
@@ -6,9 +6,25 @@ import {
   useSpring,
   AnimatePresence,
   useMotionValue,
-} from 'framer-motion';
-import { Database, ExternalLink, Terminal, Layers, Layout, Code, Sun, Moon, Github, Menu, X } from 'lucide-react';
-import ContactForm from './components/ContactForm';
+} from "framer-motion";
+import {
+  Database,
+  ExternalLink,
+  Terminal,
+  Layers,
+  Layout,
+  Code,
+  Sun,
+  Moon,
+  Menu,
+  X,
+  Braces,
+  Wind,
+  Code2,
+  Send,
+} from "lucide-react";
+import { SiJavascript, SiReact, SiTailwindcss } from "react-icons/si";
+import ContactForm from "./components/ContactForm";
 
 const MagneticCursor = () => {
   const cursorX = useMotionValue(-100);
@@ -22,8 +38,8 @@ const MagneticCursor = () => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
     };
-    window.addEventListener('mousemove', moveCursor);
-    return () => window.removeEventListener('mousemove', moveCursor);
+    window.addEventListener("mousemove", moveCursor);
+    return () => window.removeEventListener("mousemove", moveCursor);
   }, [cursorX, cursorY]);
 
   return (
@@ -35,8 +51,8 @@ const MagneticCursor = () => {
       style={{
         x: cursorXSpring,
         y: cursorYSpring,
-        translateX: '-50%',
-        translateY: '-50%',
+        translateX: "-50%",
+        translateY: "-50%",
       }}
     />
   );
@@ -45,17 +61,21 @@ const MagneticCursor = () => {
 const SkillCard = ({ title, skills, icon: Icon, accentClass }) => (
   <motion.div
     whileHover={{ y: -4, scale: 1.01 }}
-    transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+    transition={{ type: "spring", stiffness: 300, damping: 25 }}
     className="theme-panel-strong relative overflow-hidden rounded-3xl p-8
       group transition-all duration-300 hover:-translate-y-1
       hover:border-[hsl(var(--surface-border-strong)/0.9)]"
   >
-    <div className={`absolute -right-4 -top-4 w-32 h-32 blur-3xl opacity-60 transition-opacity group-hover:opacity-80 ${accentClass}`} />
+    <div
+      className={`absolute -right-4 -top-4 w-32 h-32 blur-3xl opacity-60 transition-opacity group-hover:opacity-80 ${accentClass}`}
+    />
     <div className="relative z-10">
       <div className="theme-icon-shell w-10 h-10 rounded-xl flex items-center justify-center mb-6 text-[hsl(var(--text-soft))] dark:text-white/65 group-hover:text-indigo-500 dark:group-hover:text-cyan-300 transition-colors duration-300">
         <Icon size={20} />
       </div>
-      <h3 className="text-lg font-semibold mb-4 tracking-tight leading-snug text-neutral-900 dark:text-white">{title}</h3>
+      <h3 className="text-lg font-semibold mb-4 tracking-tight leading-snug text-neutral-900 dark:text-white">
+        {title}
+      </h3>
       <div className="flex flex-wrap gap-2">
         {skills.map((s, i) => (
           <span
@@ -75,40 +95,50 @@ const SkillCard = ({ title, skills, icon: Icon, accentClass }) => (
 );
 
 const tagColors = {
-  React: 'bg-cyan-500/15 text-cyan-400 dark:text-cyan-300 border-cyan-500/20',
-  Tailwind: 'bg-sky-500/15 text-sky-400 dark:text-sky-300 border-sky-500/20',
-  Fullstack: 'bg-indigo-500/15 text-indigo-400 dark:text-indigo-300 border-indigo-500/20',
-  'Node.js': 'bg-emerald-500/15 text-emerald-400 dark:text-emerald-300 border-emerald-500/20',
-  mongodb: 'bg-green-500/15 text-green-400 dark:text-green-300 border-green-500/20',
+  React: "bg-cyan-500/15 text-cyan-400 dark:text-cyan-300 border-cyan-500/20",
+  Tailwind: "bg-sky-500/15 text-sky-400 dark:text-sky-300 border-sky-500/20",
+  Fullstack:
+    "bg-indigo-500/15 text-indigo-400 dark:text-indigo-300 border-indigo-500/20",
+  "Node.js":
+    "bg-emerald-500/15 text-emerald-400 dark:text-emerald-300 border-emerald-500/20",
+  mongodb:
+    "bg-green-500/15 text-green-400 dark:text-green-300 border-green-500/20",
 };
 
-const ProjectItem = ({ title, description, tags, link, githubUrl, gradientClass, index }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
-  const getTagStyle = (tag) => tagColors[tag] || 'bg-[hsl(var(--surface-muted)/0.75)] text-[hsl(var(--text-soft))] dark:text-white/60 border-[hsl(var(--surface-border)/0.45)]';
+const ProjectItem = ({ title, description, tags, link, image }) => {
+  const getTagStyle = (tag) =>
+    tagColors[tag] ||
+    "bg-[hsl(var(--surface-muted)/0.75)] text-[hsl(var(--text-soft))] dark:text-white/60 border-[hsl(var(--surface-border)/0.45)]";
 
   return (
     <motion.div
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={() => window.open(link, '_blank')}
-      whileHover={{ y: -12, transition: { duration: 0.2 } }}
-      className="theme-panel-strong relative group cursor-pointer overflow-hidden rounded-3xl min-h-[240px]
+      whileHover={{ y: -8, scale: 1.01 }}
+      transition={{ type: "spring", stiffness: 320, damping: 25 }}
+      className="theme-panel-strong relative group overflow-hidden rounded-3xl
         border-[hsl(var(--surface-border)/0.75)]
-        hover:border-[hsl(var(--surface-border-strong)/0.95)]
+        hover:border-[hsl(var(--surface-border-strong)/0.95)]/95
         transition-all duration-300"
     >
-      <div className="p-8 md:p-10 relative z-10 min-h-[240px] flex flex-col justify-between">
-        <span className="text-[hsl(var(--text-faint))] dark:text-white/25 font-mono text-xs tracking-tight">0{index + 1}</span>
-        <h3 className="text-2xl md:text-4xl font-bold uppercase tracking-tight mt-2 text-neutral-900 dark:text-white group-hover:text-neutral-950 dark:group-hover:text-white transition-colors">
+      <div className="relative h-44 overflow-hidden">
+        <img
+          src={image}
+          alt={title}
+          loading="lazy"
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/45 via-slate-950/15 to-transparent dark:from-slate-950/55" />
+      </div>
+
+      <div className="p-6 md:p-7 relative z-10 flex min-h-[250px] flex-col">
+        <h3 className="text-xl md:text-2xl font-bold uppercase tracking-tight text-neutral-900 dark:text-white group-hover:text-neutral-950 dark:group-hover:text-white transition-colors">
           {title}
         </h3>
         {description && (
-          <p className="text-sm text-[hsl(var(--text-soft))] dark:text-white/55 mt-2 line-clamp-2 leading-relaxed">
+          <p className="text-sm text-[hsl(var(--text-soft))] dark:text-white/55 mt-3 line-clamp-3 leading-relaxed">
             {description}
           </p>
         )}
-        <div className="flex flex-wrap gap-2 mt-4">
+        <div className="flex flex-wrap gap-2 mt-5">
           {tags.map((tag, i) => (
             <span
               key={i}
@@ -118,57 +148,24 @@ const ProjectItem = ({ title, description, tags, link, githubUrl, gradientClass,
             </span>
           ))}
         </div>
-      </div>
 
-      {/* View Project overlay */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{
-          opacity: isHovered ? 1 : 0,
-          pointerEvents: isHovered ? 'auto' : 'none',
-        }}
-        transition={{ duration: 0.2 }}
-        className="absolute inset-0 z-20 flex flex-col items-center justify-center
-          bg-[linear-gradient(145deg,rgba(79,70,229,0.95),rgba(34,211,238,0.92))]
-          dark:bg-[linear-gradient(145deg,rgba(79,70,229,0.94),rgba(14,165,233,0.88))]
-          rounded-3xl"
-      >
-        <span className="text-white font-bold text-lg md:text-xl tracking-wider uppercase drop-shadow-lg">View Project</span>
-        <div className="flex gap-4 mt-4">
-          {githubUrl && (
-            <motion.a
-              href={githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex flex-col items-center gap-2 text-white no-underline"
-            >
-              <span className="w-12 h-12 rounded-full bg-white/20 border border-white/30 flex items-center justify-center hover:bg-white/30 transition-colors">
-                <Github size={20} />
-              </span>
-              <span className="text-[10px] font-medium tracking-wider uppercase">Source Code</span>
-            </motion.a>
-          )}
+        <div className="mt-auto pt-6">
           <motion.a
             href={link}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
-            className="flex flex-col items-center gap-2 text-white no-underline"
+            className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em]
+              bg-indigo-500 text-white border border-indigo-400/80
+              shadow-[0_12px_24px_rgba(99,102,241,0.24)]
+              hover:bg-indigo-600 transition-colors"
           >
-            <span className="w-12 h-12 rounded-full bg-white/20 border border-white/30 flex items-center justify-center hover:bg-white/30 transition-colors">
-              <ExternalLink size={20} />
-            </span>
-            <span className="text-[10px] font-medium tracking-wider uppercase">Live Site</span>
+            <ExternalLink size={14} />
+            <span>View Live</span>
           </motion.a>
         </div>
-      </motion.div>
-
-      <div className={`absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${gradientClass}`} />
+      </div>
     </motion.div>
   );
 };
@@ -176,17 +173,17 @@ const ProjectItem = ({ title, description, tags, link, githubUrl, gradientClass,
 export default function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('theme');
-      if (stored) return stored === 'dark';
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("theme");
+      if (stored) return stored === "dark";
+      return window.matchMedia("(prefers-color-scheme: dark)").matches;
     }
     return true;
   });
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDark);
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    document.documentElement.classList.toggle("dark", isDark);
+    localStorage.setItem("theme", isDark ? "dark" : "light");
   }, [isDark]);
 
   const { scrollYProgress } = useScroll();
@@ -196,43 +193,72 @@ export default function App() {
 
   const projects = [
     {
-      title: 'Osara Web',
-      description: 'เว็บแอปพลิเคชันแบบ Full-stack สำหรับจัดการธุรกิจ ใช้ React สร้าง UI และ Node.js ทำ API',
-      tags: ['React', 'Tailwind', 'Fullstack'],
-      link: 'https://osara-web.vercel.app/',
-      githubUrl: '',
-      gradientClass: 'from-indigo-500/20 to-indigo-600/10',
+      title: "Osara Web",
+      description:
+        "เว็บแอปพลิเคชันแบบ Full-stack สำหรับจัดการธุรกิจ ใช้ React สร้าง UI และ Node.js ทำ API",
+      tags: ["React", "Tailwind", "Fullstack"],
+      link: "https://osara-web.vercel.app/",
+      image:
+        "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1200&q=80",
     },
     {
-      title: 'Exam dashboard',
-      description: 'ระบบจัดการข้อสอบและคะแนน เชื่อมต่อ MongoDB เก็บข้อมูล real-time',
-      tags: ['Node.js', 'mongodb'],
-      link: 'https://exam-dashboard-uuii.vercel.app/',
-      githubUrl: '',
-      gradientClass: 'from-purple-500/20 to-purple-600/10',
+      title: "Exam dashboard",
+      description:
+        "ระบบจัดการข้อสอบและคะแนน เชื่อมต่อ MongoDB เก็บข้อมูล real-time",
+      tags: ["Node.js", "mongodb"],
+      link: "https://exam-dashboard-uuii.vercel.app/",
+      image:
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
     },
     {
-      title: 'Pokemon App',
-      description: 'แอปค้นหาและดูข้อมูล Pokemon ใช้ React + Tailwind สร้าง UI สวยงาม',
-      tags: ['React', 'Tailwind', 'Fullstack'],
-      link: 'https://pikachu-project-jd9e.vercel.app/',
-      githubUrl: '',
-      gradientClass: 'from-cyan-500/20 to-cyan-600/10',
+      title: "Pokemon App",
+      description:
+        "แอปค้นหาและดูข้อมูล Pokemon ใช้ React + Tailwind สร้าง UI สวยงาม",
+      tags: ["React", "Tailwind", "Fullstack"],
+      link: "https://pikachu-project-jd9e.vercel.app/",
+      image:
+        "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80",
     },
     {
-      title: 'Foucus website',
-      description: 'เว็บไซต์โฟกัสและ productivity ใช้ React และ Tailwind ออกแบบให้ใช้งานง่าย',
-      tags: ['React', 'Tailwind', 'Fullstack'],
-      link: 'https://focus-web-ten.vercel.app/',
-      githubUrl: '',
-      gradientClass: 'from-cyan-500/20 to-cyan-600/10',
+      title: "Foucus website",
+      description:
+        "เว็บไซต์โฟกัสและ productivity ใช้ React และ Tailwind ออกแบบให้ใช้งานง่าย",
+      tags: ["React", "Tailwind", "Fullstack"],
+      link: "https://focus-web-ten.vercel.app/",
+      image:
+        "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=1200&q=80",
+    },
+  ];
+
+  const aboutSkills = [
+    {
+      name: "React",
+      icon: SiReact,
+      tone: "bg-cyan-500/15 text-cyan-500 dark:text-cyan-300 border-cyan-500/25",
+    },
+    {
+      name: "Tailwind",
+      icon: SiTailwindcss,
+      tone: "bg-sky-500/15 text-sky-500 dark:text-sky-300 border-sky-500/25",
+    },
+    {
+      name: "JavaScript",
+      icon: SiJavascript,
+      tone: "bg-amber-500/15 text-amber-500 dark:text-amber-300 border-amber-500/25",
+    },
+    {
+      name: "EmailJS",
+      icon: Send,
+      tone: "bg-indigo-500/15 text-indigo-500 dark:text-indigo-300 border-indigo-500/25",
     },
   ];
 
   return (
-    <div className="theme-shell min-h-screen overflow-x-hidden font-sans
+    <div
+      className="theme-shell min-h-screen overflow-x-hidden font-sans
       bg-background text-foreground
-      selection:bg-indigo-500/20 dark:selection:bg-indigo-500/30 selection:text-white">
+      selection:bg-indigo-500/20 dark:selection:bg-indigo-500/30 selection:text-white"
+    >
       <MagneticCursor />
 
       {/* Progress Rail */}
@@ -249,13 +275,15 @@ export default function App() {
           whileHover={{ scale: 1.02 }}
           className="text-2xl md:text-4xl font-bold tracking-tight pointer-events-auto cursor-pointer text-neutral-900 dark:text-white"
         >
-          DEV
+          MUHAI.DEV
         </motion.div>
 
         {/* Desktop nav */}
-        <div className="theme-panel hidden md:flex items-center gap-8
-          px-8 py-3 rounded-full pointer-events-auto">
-          {['Stack', 'Works', 'Connect'].map((item) => (
+        <div
+          className="theme-panel hidden md:flex items-center gap-8
+          px-8 py-3 rounded-full pointer-events-auto"
+        >
+          {["About", "Stack", "Works", "Connect"].map((item) => (
             <a
               key={item}
               href={`#${item.toLowerCase()}`}
@@ -319,15 +347,15 @@ export default function App() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ x: '100%' }}
+            initial={{ x: "100%" }}
             animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
             className="theme-panel fixed top-0 right-0 bottom-0 w-[min(320px,85vw)] z-50
               rounded-none border-l flex flex-col pt-24 px-8 md:hidden"
           >
             <div className="flex flex-col gap-2">
-              {['Stack', 'Works', 'Connect'].map((item) => (
+              {["About", "Stack", "Works", "Connect"].map((item) => (
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
@@ -343,7 +371,10 @@ export default function App() {
             </div>
             <div className="mt-auto pb-8 flex gap-3">
               <motion.button
-                onClick={() => { setIsDark(!isDark); setMobileMenuOpen(false); }}
+                onClick={() => {
+                  setIsDark(!isDark);
+                  setMobileMenuOpen(false);
+                }}
                 whileTap={{ scale: 0.95 }}
                 className="theme-panel w-12 h-12 rounded-full flex items-center justify-center
                   text-neutral-600 dark:text-white/60"
@@ -367,13 +398,16 @@ export default function App() {
         {/* Animated mesh gradient background */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(99,102,241,0.15),transparent)] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(99,102,241,0.2),transparent)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_80%_50%,rgba(139,92,246,0.08),transparent)] dark:bg-[radial-gradient(ellipse_60%_60%_at_80%_50%,rgba(139,92,246,0.12),transparent)] animate-pulse" style={{ animationDuration: '4s' }} />
+          <div
+            className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_80%_50%,rgba(139,92,246,0.08),transparent)] dark:bg-[radial-gradient(ellipse_60%_60%_at_80%_50%,rgba(139,92,246,0.12),transparent)] animate-pulse"
+            style={{ animationDuration: "4s" }}
+          />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_80%,rgba(6,182,212,0.06),transparent)] dark:bg-[radial-gradient(ellipse_50%_50%_at_20%_80%,rgba(6,182,212,0.1),transparent)]" />
         </div>
 
         {/* Floating code symbols */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {['</>', '{ }', '=>', '()', '[]', 'async'].map((sym, i) => (
+          {["</>", "{ }", "=>", "()", "[]", "async"].map((sym, i) => (
             <motion.span
               key={i}
               className="absolute text-2xl md:text-4xl font-mono text-white/[0.03] dark:text-white/[0.05] select-none"
@@ -385,7 +419,7 @@ export default function App() {
               transition={{
                 duration: 3 + i * 0.5,
                 repeat: Infinity,
-                ease: 'easeInOut',
+                ease: "easeInOut",
               }}
             >
               {sym}
@@ -402,15 +436,21 @@ export default function App() {
             <br />
             <span
               className="bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent"
-              style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+              style={{
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
             >
               Developer
             </span>
           </h1>
 
-          <p className="max-w-2xl mx-auto text-base md:text-lg font-medium tracking-wide
-            text-[hsl(var(--text-soft))] dark:text-white/60">
-            สร้างเว็บไซต์และแอปที่ใช้งานได้จริง ด้วย React, Node.js และฐานข้อมูลสมัยใหม่
+          <p
+            className="max-w-2xl mx-auto text-base md:text-lg font-medium tracking-wide
+            text-[hsl(var(--text-soft))] dark:text-white/60"
+          >
+            สร้างเว็บไซต์และแอปที่ใช้งานได้จริง ด้วย React, Node.js
+            และฐานข้อมูลสมัยใหม่
             <br />
             พร้อมช่วยธุรกิจของคุณเติบโตด้วยโซลูชันดิจิทัล
           </p>
@@ -418,8 +458,14 @@ export default function App() {
           <div className="flex flex-col sm:flex-row justify-center gap-4 pt-8">
             <motion.a
               href="#connect"
-              animate={{ boxShadow: ['0px 0px 25px rgba(99,102,241,0.4)', '0px 0px 50px rgba(99,102,241,0.6)', '0px 0px 25px rgba(99,102,241,0.4)'] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              animate={{
+                boxShadow: [
+                  "0px 0px 25px rgba(99,102,241,0.4)",
+                  "0px 0px 50px rgba(99,102,241,0.6)",
+                  "0px 0px 25px rgba(99,102,241,0.4)",
+                ],
+              }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
               className="px-8 py-4 rounded-full text-sm font-bold uppercase tracking-widest
@@ -428,13 +474,13 @@ export default function App() {
                 shadow-[0_12px_35px_rgba(99,102,241,0.25)]
                 transition-colors duration-300"
             >
-              จ้างงานเลย
+              จ้างงาน หรือ สอบถามเพิ่มเติม
             </motion.a>
             <motion.a
               href="#works"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
               className="theme-panel px-8 py-4 rounded-full text-sm font-bold uppercase tracking-widest
                 border-[hsl(var(--surface-border)/0.8)]
                 hover:bg-white/60 dark:hover:bg-white/[0.06]
@@ -451,8 +497,96 @@ export default function App() {
         </div>
       </section>
 
+      {/* About Section */}
+      <section
+        id="about"
+        className="theme-section section-divider px-6 md:px-10 py-28 md:py-36 border-y border-[hsl(var(--surface-border)/0.45)]"
+      >
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-10 items-start">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.55, ease: "easeOut" }}
+            className="theme-panel-strong rounded-3xl p-7 md:p-10 lg:col-span-3"
+          >
+            <p className="text-[11px] tracking-[0.28em] uppercase text-indigo-500 dark:text-cyan-300 mb-3 font-semibold">
+              About Me
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-neutral-900 dark:text-white mb-5">
+              Muhaidev - Passionate Web Developer 
+            </h2>
+            <p className="theme-muted leading-relaxed mb-4">
+              สวัสดีครับผม Muhaidev
+              นักพัฒนาเว็บไซต์รุ่นใหม่ที่กำลังมุ่งมั่นหาประสบการณ์และสร้างรายได้จากการทำสิ่งที่รัก
+              <br />
+              ผมอาจจะเป็น Developer วัยเยาว์ แต่ผมให้ความสำคัญกับ
+              'คุณภาพและความรับผิดชอบ' เป็นอันดับหนึ่ง
+              ทุกโปรเจกต์คือโอกาสที่ผมจะได้พิสูจน์ฝีมือ
+              ผมจึงเน้นการเขียนโค้ดที่สะอาด ทันสมัย และใช้งานได้จริง
+              เพื่อให้ผลงานชิ้นนี้กลายเป็น Portfolio ที่ดีที่สุดสำหรับอนาคตของผม
+              และเป็นเครื่องมือที่ทรงพลังที่สุดสำหรับธุรกิจของคุณ
+            </p>
+            <p className="theme-muted leading-relaxed mb-7">
+              เป้าหมายของผมคือการส่งมอบงานที่ยอดเยี่ยมเกินคาด
+              เพื่อสร้างความพึงพอใจและมิตรภาพที่ดีกับลูกค้าทุกคนที่ไว้วางใจให้โอกาสผมได้พิสูจน์ตัวเองครับ
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.55, ease: "easeOut", delay: 0.06 }}
+            className="theme-panel-strong rounded-3xl p-6 md:p-8 lg:col-span-2 h-full"
+          >
+            <p className="text-xs uppercase tracking-[0.24em] text-indigo-500 dark:text-cyan-300 font-semibold mb-4">
+              Core Focus
+            </p>
+            <div className="space-y-3 mb-7">
+              <div className="rounded-xl border border-[hsl(var(--surface-border)/0.7)] bg-[hsl(var(--surface-muted)/0.55)] px-4 py-3">
+                <p className="text-sm font-semibold text-neutral-900 dark:text-white">Quality over Quantity</p>
+                <p className="theme-muted text-xs mt-1">ทุกงานต้องใช้งานจริง ดูดี และดูแลต่อได้</p>
+              </div>
+              <div className="rounded-xl border border-[hsl(var(--surface-border)/0.7)] bg-[hsl(var(--surface-muted)/0.55)] px-4 py-3">
+                <p className="text-sm font-semibold text-neutral-900 dark:text-white">Customer Satisfaction</p>
+                <p className="theme-muted text-xs mt-1">สื่อสารชัด ส่งงานตรงเวลา และแก้ไขให้จนพอใจ</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+              {aboutSkills.map((skill) => (
+                <div
+                  key={skill.name}
+                  className={`rounded-xl border px-2.5 py-2 flex items-center gap-1.5 text-[11px] font-semibold tracking-normal min-w-0 overflow-hidden ${skill.tone}`}
+                >
+                  <span className="inline-flex h-4 w-4 items-center justify-center shrink-0">
+                    <skill.icon size={14} />
+                  </span>
+                  <span className="truncate">{skill.name}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <a
+                href="#connect"
+                className="inline-flex justify-center items-center rounded-full px-5 py-3 text-xs font-semibold uppercase tracking-[0.2em]
+                  bg-indigo-500 hover:bg-indigo-600 text-white border border-indigo-400/80
+                  shadow-[0_12px_24px_rgba(99,102,241,0.24)] transition-colors"
+              >
+                Let&apos;s Talk
+              </a>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Stack Section */}
-      <section id="stack" className="theme-section px-6 md:px-10 py-32 md:py-40">
+      <section
+        id="stack"
+        className="theme-section px-6 md:px-10 py-32 md:py-40"
+      >
         <div className="max-w-7xl mx-auto">
           <div className="mb-20 md:mb-24 space-y-3">
             <h2 className="text-4xl md:text-5xl font-bold uppercase italic tracking-tight leading-tight text-neutral-900 dark:text-white">
@@ -466,25 +600,25 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <SkillCard
               title="Frontend"
-              skills={['HTML', 'CSS', 'JavaScript', 'React', 'Tailwind CSS']}
+              skills={["HTML", "CSS", "JavaScript", "React", "Tailwind CSS"]}
               icon={Layout}
               accentClass="bg-indigo-500/10 group-hover:bg-indigo-500/20"
             />
             <SkillCard
               title="Backend"
-              skills={['Node.js', 'Express.js', 'REST APIs']}
+              skills={["Node.js", "Express.js", "REST APIs"]}
               icon={Database}
               accentClass="bg-purple-500/10 group-hover:bg-purple-500/20"
             />
             <SkillCard
               title="Databases"
-              skills={['MongoDB', 'PostgreSQL']}
+              skills={["MongoDB", "PostgreSQL"]}
               icon={Layers}
               accentClass="bg-cyan-500/10 group-hover:bg-cyan-500/20"
             />
             <SkillCard
               title="Programming Languages"
-              skills={['Python', 'C++', 'C']}
+              skills={["Python", "C++", "C"]}
               icon={Code}
               accentClass="bg-sky-500/10 group-hover:bg-sky-500/20"
             />
@@ -492,26 +626,31 @@ export default function App() {
         </div>
       </section>
 
-      {/* Work Section */}
-      <section id="works" className="theme-section theme-section-alt section-divider px-6 md:px-10 py-32 md:py-40 border-y">
+      {/* Projects Section */}
+      <section
+        id="works"
+        className="theme-section theme-section-alt section-divider px-6 md:px-10 py-32 md:py-40 border-y"
+      >
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-end mb-24 md:mb-40 gap-8 md:gap-10">
             <h2 className="text-5xl md:text-[10vw] font-bold uppercase tracking-tight italic leading-[0.85] text-neutral-900 dark:text-white">
-              Featured
+              Projects
               <br />
-              <span className="text-neutral-400 dark:text-white/10">Archive.</span>
+              <span className="text-neutral-400 dark:text-white/10">
+                Selected.
+              </span>
             </h2>
             <div className="space-y-4 md:space-y-6 text-right hidden md:block">
               <div className="text-[10px] tracking-[0.35em] uppercase text-indigo-500 dark:text-cyan-300 font-semibold">
-                Showcase 2025-2026
+                Live Work
               </div>
               <p className="max-w-xs text-[10px] tracking-[0.12em] leading-relaxed uppercase italic text-[hsl(var(--text-faint))] dark:text-white/30">
-                Explore the architecture of modern web solutions.
+                Modern web projects with real business impact.
               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {projects.map((proj, i) => (
               <ProjectItem
                 key={i}
@@ -519,9 +658,7 @@ export default function App() {
                 description={proj.description}
                 tags={proj.tags}
                 link={proj.link}
-                githubUrl={proj.githubUrl}
-                gradientClass={proj.gradientClass}
-                index={i}
+                image={proj.image}
               />
             ))}
           </div>
@@ -531,9 +668,11 @@ export default function App() {
       <ContactForm />
 
       {/* Footer */}
-      <footer className="theme-section section-divider px-6 md:px-10 py-10 md:py-12
+      <footer
+        className="theme-section section-divider px-6 md:px-10 py-10 md:py-12
         border-t flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8
-        text-[9px] tracking-[0.4em] uppercase text-[hsl(var(--text-faint))] dark:text-white/30">
+        text-[9px] tracking-[0.4em] uppercase text-[hsl(var(--text-faint))] dark:text-white/30"
+      >
         <p>Available for freelance and product work</p>
         <div className="flex gap-8 md:gap-12 font-medium tracking-[0.15em]">
           <p>Yala</p>
