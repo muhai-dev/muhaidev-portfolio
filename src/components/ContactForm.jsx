@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import emailjs from '@emailjs/browser';
-import { motion, useInView } from 'framer-motion';
-import { User, Mail, MessageSquare, Loader2 } from 'lucide-react';
+import { AnimatePresence, motion, useInView } from 'framer-motion';
+import { User, Mail, MessageSquare, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 
 const FACEBOOK_INBOX_URL = 'https://www.facebook.com/messages';
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
@@ -22,6 +22,7 @@ export default function ContactForm() {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [toast, setToast] = useState(null);
 
   const validate = (field, value) => {
     switch (field) {
@@ -68,6 +69,7 @@ export default function ContactForm() {
     if (!validateAll()) return;
 
     setIsLoading(true);
+    setToast(null);
 
     try {
       if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
@@ -90,9 +92,19 @@ export default function ContactForm() {
       setFormData({ name: '', email: '', message: '' });
       setErrors({});
       setTouched({});
-      window.alert('Message sent successfully!');
+      setToast({
+        type: 'success',
+        title: 'Success!',
+        message: 'Message sent successfully!',
+      });
     } catch (err) {
-      setErrors({ submit: err.message || 'ส่งไม่สำเร็จ กรุณาลองใหม่อีกครั้ง' });
+      const fallbackMessage = 'ส่งข้อความไม่สำเร็จ กรุณาลองใหม่อีกครั้ง หรือทักหาผมทาง Facebook ได้เลย';
+      setErrors({ submit: fallbackMessage });
+      setToast({
+        type: 'error',
+        title: 'ส่งข้อความไม่สำเร็จ',
+        message: err.message || fallbackMessage,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -131,6 +143,47 @@ export default function ContactForm() {
       className="theme-section theme-section-alt px-4 sm:px-6 md:px-10 py-24 md:py-40 overflow-x-hidden"
     >
       <div className="max-w-xl mx-auto w-full min-w-0">
+        <AnimatePresence>
+          {toast && (
+            <motion.div
+              initial={{ opacity: 0, y: -18, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -18, scale: 0.96 }}
+              transition={{ type: 'spring', stiffness: 380, damping: 28 }}
+              className={`theme-panel mb-6 rounded-2xl px-4 py-3 flex items-start gap-3 ${
+                toast.type === 'success'
+                  ? 'border-emerald-400/40 dark:border-emerald-400/30'
+                  : 'border-red-400/40 dark:border-red-400/30'
+              }`}
+            >
+              <div
+                className={`mt-0.5 flex h-9 w-9 items-center justify-center rounded-full ${
+                  toast.type === 'success'
+                    ? 'bg-emerald-500/15 text-emerald-500'
+                    : 'bg-red-500/15 text-red-500'
+                }`}
+              >
+                {toast.type === 'success' ? (
+                  <CheckCircle2 className="h-5 w-5" strokeWidth={2.2} />
+                ) : (
+                  <AlertCircle className="h-5 w-5" strokeWidth={2.2} />
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-neutral-900 dark:text-white">{toast.title}</p>
+                <p className="theme-muted text-sm">{toast.message}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setToast(null)}
+                className="theme-link text-xs uppercase tracking-[0.18em]"
+              >
+                Close
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold uppercase italic tracking-tight text-neutral-900 dark:text-white mb-3">
             Get in Touch
@@ -157,6 +210,7 @@ export default function ContactForm() {
                   <input
                     type="text"
                     name="name"
+                    required
                     value={formData.name}
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -179,6 +233,7 @@ export default function ContactForm() {
                   <input
                     type="email"
                     name="email"
+                    required
                     value={formData.email}
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -200,6 +255,7 @@ export default function ContactForm() {
                   <MessageSquare className="absolute left-3 top-4 w-5 h-5 text-[hsl(var(--text-faint))] dark:text-white/35" />
                   <textarea
                     name="message"
+                    required
                     value={formData.message}
                     onChange={handleChange}
                     onBlur={handleBlur}
