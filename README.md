@@ -1,83 +1,49 @@
 # muhaidev-portfolio
 
-Portfolio website with React frontend and Node.js Express backend for contact form submissions.
+Portfolio website built with React and Vite.
 
 ## Project Structure
 
-```
+```text
 port-folio/
-├── src/                 # React frontend (Vite)
-├── backend/             # Express API server
-│   ├── config/         # Database config
-│   ├── controllers/    # Route handlers
-│   ├── middleware/     # Express middleware
-│   ├── models/         # Mongoose schemas
-│   └── routes/         # API routes
+├── src/                # React frontend
+├── public/             # Static assets
 └── ...
 ```
 
 ## Environment Variables
 
-**⚠️ WARNING: Never commit `.env` files to Git!** They contain secrets. Use `.env.example` as a template.
+Never commit your real `.env` file. Use `.env.example` as the template.
 
-### Frontend (optional)
-
-Create `.env` in project root for custom API URL:
+For EmailJS in Vite, create a root `.env` file:
 
 ```bash
 cp .env.example .env
-# Edit .env: VITE_API_URL=http://localhost:5000
 ```
 
-### Backend (required)
-
-See Backend Setup below.
-
-## Frontend Setup
-
-```bash
-npm install
-npm run dev
-```
-
-## Backend Setup
-
-### 1. Install dependencies
-
-```bash
-cd backend
-npm install
-```
-
-### 2. Environment Variables
-
-**⚠️ IMPORTANT: Never commit your `.env` file to Git!** It contains secrets like your database password.
-
-Create a `.env` file in the `backend/` folder:
-
-```bash
-cd backend
-cp .env.example .env
-```
-
-Then edit `.env` and fill in your values:
+Then set:
 
 ```env
-PORT=5000
-MONGO_URI=mongodb+srv://your-connection-string
-FRONTEND_URL=http://localhost:5173
+VITE_EMAILJS_SERVICE_ID=your_emailjs_service_id
+VITE_EMAILJS_TEMPLATE_ID=your_emailjs_template_id
+VITE_EMAILJS_PUBLIC_KEY=your_emailjs_public_key
 ```
 
-- **MONGO_URI**: Get a free MongoDB connection string from [MongoDB Atlas](https://www.mongodb.com/atlas)
-- **FRONTEND_URL**: Your frontend URL (for CORS). Use `http://localhost:5173` for local dev.
-
-### 3. Run the server
+## Setup
 
 ```bash
+npm install
 npm run dev
 ```
 
-## API
+## Contact Form
 
-- `POST /api/contact` - Submit contact form (rate limited: 5 requests/hour per IP)
-- `GET /api/health` - Health check
+The contact form sends messages directly from the frontend using `@emailjs/browser`.
+
+EmailJS template variables used by the form:
+
+- `from_name`
+- `from_email`
+- `reply_to`
+- `message`
+- `to_email`

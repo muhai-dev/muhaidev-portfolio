@@ -1,9 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { User, Mail, MessageSquare, CheckCircle2, Loader2 } from 'lucide-react';
+import emailjs from '@emailjs/browser';
+import { motion, useInView } from 'framer-motion';
+import { User, Mail, MessageSquare, Loader2 } from 'lucide-react';
 
-const CONTACT_EMAIL = 'muhaiminsatae2555@gmail.com';
 const FACEBOOK_INBOX_URL = 'https://www.facebook.com/messages';
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -19,7 +22,6 @@ export default function ContactForm() {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
 
   const validate = (field, value) => {
     switch (field) {
@@ -61,26 +63,34 @@ export default function ContactForm() {
     setErrors((prev) => ({ ...prev, [name]: validate(name, value) }));
   };
 
-  const handleSubmit = async (e) => {
+  const sendEmail = async (e) => {
     e.preventDefault();
     if (!validateAll()) return;
 
     setIsLoading(true);
-    setIsSuccess(false);
 
     try {
-      const subject = encodeURIComponent(`[Portfolio] ${formData.name}`);
-      const body = encodeURIComponent(
-        `ชื่อ: ${formData.name}\nอีเมล: ${formData.email}\n\nรายละเอียด:\n${formData.message}`
+      if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
+        throw new Error('Email service is not configured yet.');
+      }
+
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+        },
+        {
+          publicKey: EMAILJS_PUBLIC_KEY,
+        }
       );
-      const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(CONTACT_EMAIL)}&su=${subject}&body=${body}`;
 
-      window.open(gmailComposeUrl, '_blank', 'noopener,noreferrer');
-
-      setIsSuccess(true);
       setFormData({ name: '', email: '', message: '' });
       setErrors({});
       setTouched({});
+      window.alert('Message sent successfully!');
     } catch (err) {
       setErrors({ submit: err.message || 'ส่งไม่สำเร็จ กรุณาลองใหม่อีกครั้ง' });
     } finally {
@@ -130,49 +140,15 @@ export default function ContactForm() {
           </p>
         </div>
 
-        <AnimatePresence mode="wait">
-          {isSuccess ? (
-            <motion.div
-              key="success"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              className="theme-panel-strong rounded-3xl p-12 text-center"
-            >
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 20, delay: 0.1 }}
-                className="w-16 h-16 mx-auto mb-6 rounded-full bg-emerald-500/20 dark:bg-emerald-400/20
-                  flex items-center justify-center"
-              >
-                <CheckCircle2 className="w-10 h-10 text-emerald-500" strokeWidth={2} />
-              </motion.div>
-              <h3 className="text-2xl font-bold text-neutral-900 dark:text-white mb-2">Ready to Send</h3>
-              <p className="theme-muted text-sm mb-6">
-                Gmail opened in a new tab. If you prefer, you can message me on Facebook instead.
-              </p>
-              <button
-                type="button"
-                onClick={() => setIsSuccess(false)}
-                className="theme-link text-sm underline underline-offset-2"
-              >
-                ส่งข้อความอีกครั้ง
-              </button>
-            </motion.div>
-          ) : (
-            <motion.form
-              key="form"
-              onSubmit={handleSubmit}
-              variants={staggerContainer}
-              initial="hidden"
-              animate={isInView ? 'visible' : 'hidden'}
-              exit={{ opacity: 0 }}
-              className="theme-panel-strong rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl space-y-6 w-full max-w-full overflow-hidden"
-            >
+        <motion.form
+          onSubmit={sendEmail}
+          variants={staggerContainer}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+          className="theme-panel-strong rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl space-y-6 w-full max-w-full overflow-hidden"
+        >
               {/* Name */}
-              <motion.div variants={staggerItem}>
+          <motion.div variants={staggerItem}>
                 <label className="theme-kicker block text-xs font-medium tracking-[0.15em] uppercase mb-2">
                   ชื่อ
                 </label>
@@ -191,10 +167,10 @@ export default function ContactForm() {
                 {errors.name && (
                   <p className="mt-1.5 text-xs text-red-500 dark:text-red-400">{errors.name}</p>
                 )}
-              </motion.div>
+          </motion.div>
 
               {/* Email */}
-              <motion.div variants={staggerItem}>
+          <motion.div variants={staggerItem}>
                 <label className="theme-kicker block text-xs font-medium tracking-[0.15em] uppercase mb-2">
                   อีเมล
                 </label>
@@ -213,10 +189,10 @@ export default function ContactForm() {
                 {errors.email && (
                   <p className="mt-1.5 text-xs text-red-500 dark:text-red-400">{errors.email}</p>
                 )}
-              </motion.div>
+          </motion.div>
 
               {/* Message */}
-              <motion.div variants={staggerItem}>
+          <motion.div variants={staggerItem}>
                 <label className="theme-kicker block text-xs font-medium tracking-[0.15em] uppercase mb-2">
                   รายละเอียด
                 </label>
@@ -235,51 +211,49 @@ export default function ContactForm() {
                 {errors.message && (
                   <p className="mt-1.5 text-xs text-red-500 dark:text-red-400">{errors.message}</p>
                 )}
-              </motion.div>
+          </motion.div>
 
-              {errors.submit && (
-                <p className="text-sm text-red-500 dark:text-red-400 text-center">{errors.submit}</p>
-              )}
-
-              <motion.div variants={staggerItem}>
-              <motion.button
-                type="submit"
-                disabled={isLoading}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                className="w-full py-4 rounded-xl font-semibold text-sm tracking-[0.2em] uppercase
-                  bg-indigo-500 hover:bg-indigo-600 disabled:opacity-70 disabled:cursor-not-allowed
-                  text-white border border-indigo-400/70
-                  shadow-[0_16px_40px_rgba(99,102,241,0.25)] hover:shadow-[0_18px_48px_rgba(99,102,241,0.35)]
-                  focus:ring-2 focus:ring-indigo-500/60 focus:outline-none
-                  transition-all duration-300 flex items-center justify-center gap-2"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin flex-shrink-0" />
-                    <span>กำลังส่ง...</span>
-                  </>
-                ) : (
-                  'ส่งข้อความ'
-                )}
-              </motion.button>
-              </motion.div>
-
-              <motion.p variants={staggerItem} className="theme-muted text-center text-xs pt-2">
-                หรือ{' '}
-                <a
-                  href={FACEBOOK_INBOX_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="theme-link underline underline-offset-2"
-                >
-                  ถ้าไม่สะดวก ส่งข้อความมาที่ Facebook ได้เลย
-                </a>
-              </motion.p>
-            </motion.form>
+          {errors.submit && (
+            <p className="text-sm text-red-500 dark:text-red-400 text-center">{errors.submit}</p>
           )}
-        </AnimatePresence>
+
+          <motion.div variants={staggerItem}>
+            <motion.button
+              type="submit"
+              disabled={isLoading}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+              className="w-full py-4 rounded-xl font-semibold text-sm tracking-[0.2em] uppercase
+                bg-indigo-500 hover:bg-indigo-600 disabled:opacity-70 disabled:cursor-not-allowed
+                text-white border border-indigo-400/70
+                shadow-[0_16px_40px_rgba(99,102,241,0.25)] hover:shadow-[0_18px_48px_rgba(99,102,241,0.35)]
+                focus:ring-2 focus:ring-indigo-500/60 focus:outline-none
+                transition-all duration-300 flex items-center justify-center gap-2"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin flex-shrink-0" />
+                  <span>Sending...</span>
+                </>
+              ) : (
+                'ส่งข้อความ'
+              )}
+            </motion.button>
+          </motion.div>
+
+          <motion.p variants={staggerItem} className="theme-muted text-center text-xs pt-2">
+            หรือ{' '}
+            <a
+              href={FACEBOOK_INBOX_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="theme-link underline underline-offset-2"
+            >
+              ถ้าไม่สะดวก ส่งข้อความมาที่ Facebook ได้เลย
+            </a>
+          </motion.p>
+        </motion.form>
       </div>
     </motion.section>
   );
