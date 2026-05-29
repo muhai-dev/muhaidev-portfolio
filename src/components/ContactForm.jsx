@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import emailjs from '@emailjs/browser';
 import { AnimatePresence, motion, useInView } from 'framer-motion';
-import { User, Mail, MessageSquare, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { User, Mail, MessageSquare, Loader2, CheckCircle2, AlertCircle, MapPin, Clock, Zap } from 'lucide-react';
 
 const FACEBOOK_INBOX_URL = 'https://www.facebook.com/messages';
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
@@ -184,13 +184,41 @@ export default function ContactForm() {
           )}
         </AnimatePresence>
 
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold uppercase italic tracking-tight text-neutral-900 dark:text-white mb-3">
-            Get in Touch
+        <div className="text-center mb-10 md:mb-12">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <span className="h-px w-8 bg-indigo-500/50 dark:bg-indigo-400/50" />
+            <p className="text-[10px] tracking-[0.35em] uppercase font-semibold text-indigo-500 dark:text-indigo-400">
+              Contact
+            </p>
+            <span className="h-px w-8 bg-indigo-500/50 dark:bg-indigo-400/50" />
+          </div>
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter leading-[0.9] text-neutral-900 dark:text-white mb-4">
+            Let&apos;s Build
+            <br />
+            <span className="bg-gradient-to-r from-indigo-500 via-violet-500 to-cyan-400 bg-clip-text text-transparent">
+              Together
+            </span>
           </h2>
           <p className="theme-kicker text-sm tracking-wide">
             มีโปรเจกต์ในใจ? ส่งข้อความมาคุยกันได้เลย
           </p>
+
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
+            {[
+              { icon: MapPin, label: "Yala, Thailand" },
+              { icon: Clock, label: "ตอบกลับภายใน 24 ชม." },
+              { icon: Zap, label: "ว่างรับงานใหม่" },
+            ].map(({ icon: Icon, label }) => (
+              <span
+                key={label}
+                className="theme-panel inline-flex items-center gap-2 rounded-full px-3.5 py-1.5
+                  text-[11px] font-medium text-neutral-700 dark:text-white/70"
+              >
+                <Icon className="h-3.5 w-3.5 text-indigo-500 dark:text-cyan-300" />
+                {label}
+              </span>
+            ))}
+          </div>
         </div>
 
         <motion.form
