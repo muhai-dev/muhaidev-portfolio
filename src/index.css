@@ -317,6 +317,35 @@ body {
   .scroll-cue-dot {
     animation: scroll-cue 1.8s ease-in-out infinite;
   }
+
+  .projects-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--surface-border-strong) / 0.45) transparent;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .projects-scroll::-webkit-scrollbar {
+    height: 5px;
+  }
+
+  .projects-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .projects-scroll::-webkit-scrollbar-thumb {
+    background: hsl(var(--surface-border-strong) / 0.45);
+    border-radius: 999px;
+  }
+
+  @media (max-width: 639px) {
+    .projects-scroll {
+      scrollbar-width: none;
+    }
+
+    .projects-scroll::-webkit-scrollbar {
+      display: none;
+    }
+  }
 }
 
 @keyframes gradient-flow {

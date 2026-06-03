@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   motion,
   useScroll,
@@ -19,6 +19,8 @@ import {
   X,
   Send,
   ArrowUp,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { SiJavascript, SiReact, SiTailwindcss } from "react-icons/si";
 import ContactForm from "./components/ContactForm";
@@ -246,7 +248,24 @@ const ProjectWallpaper = ({ index, title }) => {
   );
 };
 
-const ProjectItem = ({ title, description, tags, link, index = 0, total = 0, delayMs = 0 }) => {
+const getSlidesPerView = (width) => {
+  if (width >= 1024) return 3;
+  if (width >= 640) return 2;
+  return 1;
+};
+
+const CAROUSEL_GAP_PX = 16;
+
+const ProjectItem = ({
+  title,
+  description,
+  tags,
+  link,
+  index = 0,
+  total = 0,
+  delayMs = 0,
+  inCarousel = false,
+}) => {
   const getTagStyle = (tag) =>
     tagColors[tag] ||
     "bg-[hsl(var(--surface-muted)/0.75)] text-[hsl(var(--text-soft))] dark:text-white/60 border-[hsl(var(--surface-border)/0.45)]";
@@ -258,24 +277,31 @@ const ProjectItem = ({ title, description, tags, link, index = 0, total = 0, del
     }
   })();
 
+  const motionProps = inCarousel
+    ? { initial: false, animate: { opacity: 1, y: 0 } }
+    : {
+        initial: { opacity: 0, y: 20 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, amount: 0.05 },
+        transition: { duration: 0.5, delay: delayMs / 1000, ease: [0.2, 0.8, 0.2, 1] },
+      };
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.05 }}
-      transition={{ duration: 0.5, delay: delayMs / 1000, ease: [0.2, 0.8, 0.2, 1] }}
+      {...motionProps}
+      className={inCarousel ? "h-full w-full min-w-0" : "flex-shrink-0 snap-start w-[min(100%,320px)] sm:w-[300px] md:w-[340px]"}
     >
     <motion.div
-      whileHover={{ y: -6 }}
+      whileHover={{ y: -4 }}
       transition={{ type: "spring", stiffness: 320, damping: 25 }}
-      className="theme-panel-strong relative group overflow-hidden rounded-2xl md:rounded-3xl
+      className="theme-panel-strong relative group overflow-hidden rounded-2xl
         border-[hsl(var(--surface-border)/0.75)]
         hover:border-[hsl(var(--surface-border-strong)/0.95)]/95
-        hover:shadow-[0_24px_60px_-20px_rgba(99,102,241,0.4)]
+        hover:shadow-[0_20px_48px_-18px_rgba(99,102,241,0.4)]
         transition-[border-color,box-shadow] duration-300 h-full flex flex-col"
       data-cursor="card"
     >
-      <div className="relative h-52 sm:h-60 md:h-64 lg:h-72 overflow-hidden rounded-t-2xl md:rounded-t-3xl">
+      <div className="relative h-36 sm:h-40 overflow-hidden rounded-t-2xl">
         <div className="absolute left-0 right-0 top-0 z-20 h-8 flex items-center justify-between px-3 bg-slate-950/90 border-b border-white/[0.08]">
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-red-400/70" />
@@ -307,28 +333,28 @@ const ProjectItem = ({ title, description, tags, link, index = 0, total = 0, del
         </div>
       </div>
 
-      <div className="p-6 md:p-7 lg:p-8 relative z-10 flex flex-col flex-1">
-        <h3 className="text-xl md:text-2xl lg:text-3xl font-bold uppercase tracking-tight text-neutral-900 dark:text-white group-hover:text-indigo-500 dark:group-hover:text-cyan-300 transition-colors duration-300">
+      <div className="p-4 md:p-5 relative z-10 flex flex-col flex-1">
+        <h3 className="text-lg md:text-xl font-bold uppercase tracking-tight text-neutral-900 dark:text-white group-hover:text-indigo-500 dark:group-hover:text-cyan-300 transition-colors duration-300">
           {title}
         </h3>
         {description && (
-          <p className="text-sm md:text-[15px] text-[hsl(var(--text-soft))] dark:text-white/55 mt-3 line-clamp-3 leading-relaxed">
+          <p className="text-xs sm:text-sm text-[hsl(var(--text-soft))] dark:text-white/55 mt-2 line-clamp-2 leading-relaxed">
             {description}
           </p>
         )}
-        <div className="flex flex-wrap gap-2 mt-5">
+        <div className="flex flex-wrap gap-1.5 mt-3">
           {tags.map((tag, i) => (
             <span
               key={i}
-              className={`px-3 py-1 rounded-full text-[10px] font-medium tracking-wider uppercase border ${getTagStyle(tag)}`}
+              className={`px-2.5 py-0.5 rounded-full text-[9px] font-medium tracking-wider uppercase border ${getTagStyle(tag)}`}
             >
               {tag}
             </span>
           ))}
         </div>
 
-        <div className="mt-auto pt-6 flex items-center justify-between gap-4 border-t border-[hsl(var(--surface-border)/0.5)]">
-          <span className="hidden sm:block text-[10px] font-mono tracking-[0.15em] text-[hsl(var(--text-faint))] dark:text-white/35 truncate">
+        <div className="mt-auto pt-4 flex items-center justify-between gap-3 border-t border-[hsl(var(--surface-border)/0.5)]">
+          <span className="text-[9px] font-mono tracking-[0.12em] text-[hsl(var(--text-faint))] dark:text-white/35 truncate min-w-0">
             {siteHost}
           </span>
           <motion.a
@@ -339,18 +365,258 @@ const ProjectItem = ({ title, description, tags, link, index = 0, total = 0, del
             data-cursor="interactive"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[11px] font-semibold uppercase tracking-[0.2em] shrink-0
+            className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] shrink-0
               bg-indigo-500 text-white border border-indigo-400/80
-              shadow-[0_8px_20px_rgba(99,102,241,0.22)]
+              shadow-[0_6px_16px_rgba(99,102,241,0.22)]
               hover:bg-indigo-600 transition-colors"
           >
-            <ExternalLink size={13} />
-            <span>View Live</span>
+            <ExternalLink size={12} />
+            <span>Live</span>
           </motion.a>
         </div>
       </div>
     </motion.div>
     </motion.div>
+  );
+};
+
+const carouselNavBtnClass =
+  "theme-panel w-10 h-10 rounded-full flex items-center justify-center shrink-0 " +
+  "text-[hsl(var(--text-soft))] dark:text-white/70 " +
+  "hover:text-indigo-500 dark:hover:text-cyan-300 hover:border-indigo-500/30 " +
+  "disabled:opacity-35 disabled:pointer-events-none disabled:cursor-not-allowed " +
+  "transition-all duration-200";
+
+const ProjectCarousel = ({ projects }) => {
+  const viewportRef = useRef(null);
+  const touchStartX = useRef(null);
+  const [index, setIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
+  const [slidesPerView, setSlidesPerView] = useState(1);
+  const [slideWidth, setSlideWidth] = useState(0);
+  const [reduceMotion, setReduceMotion] = useState(false);
+
+  const maxIndex = Math.max(0, projects.length - slidesPerView);
+
+  const updateLayout = useCallback(() => {
+    setSlidesPerView(getSlidesPerView(window.innerWidth));
+    const el = viewportRef.current;
+    if (!el) return;
+    const spv = getSlidesPerView(window.innerWidth);
+    const w = el.offsetWidth;
+    setSlideWidth((w - CAROUSEL_GAP_PX * (spv - 1)) / spv);
+  }, []);
+
+  useEffect(() => {
+    updateLayout();
+    window.addEventListener("resize", updateLayout);
+    return () => window.removeEventListener("resize", updateLayout);
+  }, [updateLayout]);
+
+  useEffect(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(updateLayout);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [updateLayout]);
+
+  useEffect(() => {
+    setReduceMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
+
+  useEffect(() => {
+    setIndex((i) => Math.min(i, maxIndex));
+  }, [maxIndex]);
+
+  const offset = index * (slideWidth + CAROUSEL_GAP_PX);
+
+  const goPrev = useCallback(() => {
+    setDirection(-1);
+    setIndex((i) => Math.max(0, i - 1));
+  }, []);
+
+  const goNext = useCallback(() => {
+    setDirection(1);
+    setIndex((i) => Math.min(maxIndex, i + 1));
+  }, [maxIndex]);
+
+  const onTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const onTouchEnd = (e) => {
+    if (touchStartX.current == null) return;
+    const dx = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 48) {
+      if (dx > 0) {
+        setDirection(1);
+        setIndex((i) => Math.min(maxIndex, i + 1));
+      } else {
+        setDirection(-1);
+        setIndex((i) => Math.max(0, i - 1));
+      }
+    }
+    touchStartX.current = null;
+  };
+
+  const onKeyDown = (e) => {
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      goPrev();
+    }
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      goNext();
+    }
+  };
+
+  const pageCount = maxIndex + 1;
+  const currentPage = index + 1;
+
+  const carouselControls = (
+    <div className="flex items-center gap-2">
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={currentPage}
+          initial={reduceMotion ? false : { opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={reduceMotion ? undefined : { opacity: 0, y: 6 }}
+          transition={{ duration: 0.22 }}
+          className="text-[10px] font-mono tabular-nums tracking-[0.2em] text-[hsl(var(--text-faint))] dark:text-white/40 mr-1 inline-block min-w-[3.5rem] text-right"
+        >
+          {String(currentPage).padStart(2, "0")} / {String(pageCount).padStart(2, "0")}
+        </motion.span>
+      </AnimatePresence>
+      <button
+        type="button"
+        onClick={goPrev}
+        disabled={index === 0}
+        aria-label="Previous projects"
+        data-cursor="interactive"
+        className={carouselNavBtnClass}
+      >
+        <ChevronLeft size={20} />
+      </button>
+      <button
+        type="button"
+        onClick={goNext}
+        disabled={index >= maxIndex}
+        aria-label="Next projects"
+        data-cursor="interactive"
+        className={carouselNavBtnClass}
+      >
+        <ChevronRight size={20} />
+      </button>
+    </div>
+  );
+
+  return (
+    <>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-10 gap-6 md:gap-10">
+        <div>
+          <p className="text-[10px] tracking-[0.35em] uppercase font-semibold text-indigo-500 dark:text-indigo-400 mb-3">
+            Selected Work
+          </p>
+          <h2 className="text-4xl sm:text-5xl md:text-[7vw] lg:text-[8vw] font-black uppercase tracking-tight leading-[0.88] text-neutral-900 dark:text-white">
+            Projects
+            <br />
+            <span className="text-neutral-300 dark:text-white/12">
+              &amp; Cases
+            </span>
+          </h2>
+        </div>
+        <div className="flex flex-col items-end gap-3 w-full md:w-auto shrink-0">
+          <p className="hidden md:block max-w-[240px] text-[11px] leading-relaxed text-[hsl(var(--text-faint))] dark:text-white/35 text-right">
+            Real projects. Live deployments. Built with care and attention to detail.
+          </p>
+          <div className="hidden md:flex items-center gap-3">
+            <span className="h-px w-14 bg-indigo-500/30" />
+            {carouselControls}
+          </div>
+          <div className="flex md:hidden justify-end w-full">{carouselControls}</div>
+        </div>
+      </div>
+
+      <div className="relative md:px-12">
+        <button
+          type="button"
+          onClick={goPrev}
+          disabled={index === 0}
+          aria-label="Previous projects"
+          data-cursor="interactive"
+          className={`${carouselNavBtnClass} absolute left-0 top-1/2 -translate-y-1/2 z-10 hidden md:flex`}
+        >
+          <ChevronLeft size={22} />
+        </button>
+
+        <div
+          ref={viewportRef}
+          className="overflow-hidden touch-pan-x outline-none"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+          onKeyDown={onKeyDown}
+          tabIndex={0}
+          role="region"
+          aria-roledescription="carousel"
+          aria-label="Project slides"
+        >
+          <motion.div
+            className="flex gap-4 will-change-transform"
+            animate={{ x: slideWidth > 0 ? -offset : 0 }}
+            transition={
+              reduceMotion
+                ? { duration: 0 }
+                : { type: "spring", stiffness: 240, damping: 28, mass: 0.85 }
+            }
+          >
+            {projects.map((proj, i) => {
+              const isVisible = i >= index && i < index + slidesPerView;
+              return (
+                <motion.div
+                  key={isVisible ? `${proj.title}-${index}` : proj.title}
+                  className="flex-shrink-0"
+                  style={{ width: slideWidth > 0 ? slideWidth : "100%" }}
+                  aria-hidden={!isVisible}
+                  initial={
+                    reduceMotion || !isVisible
+                      ? false
+                      : { opacity: 0, x: direction * 28, y: 12, scale: 0.97 }
+                  }
+                  animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+                  transition={{
+                    duration: 0.45,
+                    delay: isVisible ? (i - index) * 0.07 : 0,
+                    ease: [0.2, 0.8, 0.2, 1],
+                  }}
+                >
+                  <ProjectItem
+                    inCarousel
+                    index={i}
+                    total={projects.length}
+                    title={proj.title}
+                    description={proj.description}
+                    tags={proj.tags}
+                    link={proj.link}
+                  />
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        </div>
+
+        <button
+          type="button"
+          onClick={goNext}
+          disabled={index >= maxIndex}
+          aria-label="Next projects"
+          data-cursor="interactive"
+          className={`${carouselNavBtnClass} absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden md:flex`}
+        >
+          <ChevronRight size={22} />
+        </button>
+      </div>
+    </>
   );
 };
 
@@ -447,6 +713,13 @@ export default function App() {
   const opacityHero = useTransform(smoothY, [0, 0.15], [1, 0]);
 
   const projects = [
+    {
+      title: "UpFix",
+      description:
+        "แพลตฟอร์มให้นักเรียนแจ้งปัญหาในโรงเรียนและโหวตจัดลำดับความสำคัญ โปร่งใส รวดเร็ว ส่งตรงถึงผู้แก้ไขจริง",
+      tags: ["React", "Tailwind", "Fullstack"],
+      link: "https://upfix-web.pages.dev/",
+    },
     {
       title: "Osara Web",
       description:
@@ -1015,41 +1288,7 @@ export default function App() {
         className={`theme-section theme-section-alt section-divider ${SECTION_X} ${SECTION_Y_LG} border-y`}
       >
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-20 lg:mb-24 gap-6 md:gap-10">
-            <div>
-              <p className="text-[10px] tracking-[0.35em] uppercase font-semibold text-indigo-500 dark:text-indigo-400 mb-3">
-                Selected Work
-              </p>
-              <h2 className="text-4xl sm:text-5xl md:text-[7vw] lg:text-[8vw] font-black uppercase tracking-tight leading-[0.88] text-neutral-900 dark:text-white">
-                Projects
-                <br />
-                <span className="text-neutral-300 dark:text-white/12">
-                  &amp; Cases
-                </span>
-              </h2>
-            </div>
-            <div className="hidden md:flex flex-col items-end gap-2 pb-2 shrink-0">
-              <p className="max-w-[240px] text-[11px] leading-relaxed text-[hsl(var(--text-faint))] dark:text-white/35 text-right">
-                Real projects. Live deployments. Built with care and attention to detail.
-              </p>
-              <span className="h-px w-14 bg-indigo-500/30" />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-7 lg:gap-8">
-            {projects.map((proj, i) => (
-              <ProjectItem
-                key={i}
-                index={i}
-                total={projects.length}
-                title={proj.title}
-                description={proj.description}
-                tags={proj.tags}
-                link={proj.link}
-                delayMs={i * 90}
-              />
-            ))}
-          </div>
+          <ProjectCarousel projects={projects} />
         </div>
       </section>
 
