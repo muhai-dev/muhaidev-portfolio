@@ -721,6 +721,13 @@ export default function App() {
       link: "https://upfix-web.pages.dev/",
     },
     {
+      title: "CP67 Dashboard",
+      description:
+        "แดชบอร์ดห้องเรียน CP67 กรอกรหัสห้องเพื่อดูการบ้านและตารางสอบ สำหรับสมาชิกห้อง",
+      tags: ["React", "Tailwind", "Fullstack"],
+      link: "https://cp67-web.pages.dev/",
+    },
+    {
       title: "Osara Web",
       description:
         "เว็บแอปพลิเคชันแบบ Full-stack สำหรับจัดการธุรกิจ ใช้ React สร้าง UI และ Node.js ทำ API",
